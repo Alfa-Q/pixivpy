@@ -10,3 +10,10 @@ class InvalidStatusCode(Exception):
     expected value.
     """
     pass
+
+
+class InvalidJSONResponse(Exception):
+    """
+    Exception which indicates that the JSON response received by the request call was invalid.
+    """
+    pass

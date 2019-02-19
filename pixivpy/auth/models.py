@@ -38,3 +38,29 @@ def get_auth_token(username: str, password: str):
     )
 
 
+@request(expected_code=200)
+def renew_auth_token(auth_token: str):
+    """ Renews an auth bearer token for making API requests.
+
+    Parameters:
+        auth_token: The auth bearer token to be renewed.
+    
+    Returns: The JSON response.
+    """
+    return requests.Request(
+        method = 'POST',
+        url = 'https://oauth.secure.pixiv.net/auth/token',
+        headers = { 
+            'Authority': 'oauth.secure.pixiv.net',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data = {
+            'client_id':     'MOBrBDS8blbauoSck0ZfDbtuzpyT',                # TEMPORARILY HARD CODED (NOT MINE)
+            'client_secret': 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj',    # TEMPORARILY HARD CODED (NOT MINE)
+            'device_token':   'pixiv',
+            'grant_type': 'refresh_token',
+            'refresh_token': auth_token,
+            'get_secure_url': True,
+            'include_policy': True
+        }
+    )

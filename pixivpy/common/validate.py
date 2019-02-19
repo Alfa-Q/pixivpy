@@ -4,7 +4,7 @@ pixivpy.common.validate
 Pixiv JSON response validation.
 """
 
-from pixiv.common.exceptions import InvalidJSONResponse
+from pixivpy.common.exceptions import InvalidJSONResponse
 from typing import Dict
 
 
@@ -16,8 +16,8 @@ def json(json: Dict):
 
     Raises an InvalidJSONResponse exception if the JSON response was found to be invalid.
     """
-    if json['error'] == True:
+    if 'has_error' in json.keys():
         raise InvalidJSONResponse(
-            "'error' flag was set in the json response.\n"+
+            "'has_error' flag was set in the json response.\n"+
             '\tJSON: {json}'
         )

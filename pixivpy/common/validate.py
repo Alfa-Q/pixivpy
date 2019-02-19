@@ -21,3 +21,8 @@ def json(json: Dict):
             "'has_error' flag was set in the json response.\n"+
             '\tJSON: {json}'
         )
+    if 'response' not in json.keys():
+        raise InvalidJSONResponse(
+            "'response' key is missing in the json response.\n"+
+            '\tJSON: {json}'
+        )

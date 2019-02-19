@@ -30,3 +30,24 @@ def get_auth_token(email: str, password: str) -> Tuple[str, int]:
         raise e
     except exceptions.InvalidJSONResponse as e:
         raise e
+
+
+def renew_auth_token(auth_token: str) -> Tuple[str, int]:
+    """ Renews an auth bearer token.
+
+    After an auth bearer token expires, either a new auth bearer token will be returned or the
+    same token with the time-to-live refreshed.
+
+    Parameters:
+        auth_token: The auth bearer token to be renewed.
+    
+    Returns: A renewed auth bearer token and the associated time-to-live (in seconds).
+    """
+    try:
+        json = models.renew_auth_token(auth_token)
+        validate.json(json)
+        return json['response']['refresh_token'], json['response']['expires_in']
+    except exceptions.InvalidStatusCode as e:
+        raise e
+    except exceptions.InvalidJSONResponse as e:
+        raise e

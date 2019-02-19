@@ -8,7 +8,7 @@ from pixivpy.auth import models
 from tests.config import Config
 
 
-def test_get_auth_token_sanity():
+def test_model_get_auth_token_sanity():
     """
     Ensure that the json response is not NULL
     """
@@ -16,7 +16,7 @@ def test_get_auth_token_sanity():
     assert json is not None
 
 
-def test_get_auth_token_json():
+def test_model_get_auth_token_json():
     """
     Ensure that the json response is type Dict
     """

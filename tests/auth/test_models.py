@@ -1,7 +1,7 @@
 """
-tests.auth.test_raw
+tests.auth.test_models
 -------------------
-Testing authentication API model.
+Testing the Pixiv authentication API model.
 """
 
 from pixivpy.auth import models

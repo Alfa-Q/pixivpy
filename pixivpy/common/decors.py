@@ -22,12 +22,9 @@ def request(expected_code: int) -> Dict:
     Raises a InvalidStatusCode exception if the expected_code does not match the response status 
     code.
     """
-
     def decorator(function: Callable):
-
         @wraps(function)
         def wrapper(*args, **kwargs):
-
             request = function(*args, **kwargs)
             prepared = request.prepare()
             response = requests.Session().send(prepared)

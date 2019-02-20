@@ -26,8 +26,8 @@ def get_auth_token(username: str, password: str):
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         data = {
-            'client_id':     'MOBrBDS8blbauoSck0ZfDbtuzpyT',                # TEMPORARILY HARD CODED (NOT MINE)
-            'client_secret': 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj',    # TEMPORARILY HARD CODED (NOT MINE)
+            'client_id':     'MOBrBDS8blbauoSck0ZfDbtuzpyT',                
+            'client_secret': 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj',
             'grant_type': 'password',
             'username': username,
             'password': password,
@@ -55,9 +55,9 @@ def renew_auth_token(auth_token: str):
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         data = {
-            'client_id':     'MOBrBDS8blbauoSck0ZfDbtuzpyT',                # TEMPORARILY HARD CODED (NOT MINE)
-            'client_secret': 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj',    # TEMPORARILY HARD CODED (NOT MINE)
-            'device_token':   'pixiv',
+            'client_id':     'MOBrBDS8blbauoSck0ZfDbtuzpyT',               
+            'client_secret': 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj', 
+            'device_token':  'pixiv',
             'grant_type': 'refresh_token',
             'refresh_token': auth_token,
             'get_secure_url': True,

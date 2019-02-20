@@ -4,7 +4,7 @@ pixivpy.auth.models
 Authentication request models for getting raw JSON response.
 """
 
-import requests
+from requests import Request
 from pixivpy.common.decors import request
 
 
@@ -18,7 +18,7 @@ def get_auth_token(username: str, password: str):
 
     Returns: The JSON response.
     """
-    return requests.Request(
+    return Request(
         method = 'POST',
         url = 'https://oauth.secure.pixiv.net/auth/token',
         headers = { 
@@ -47,11 +47,11 @@ def renew_auth_token(auth_token: str):
     
     Returns: The JSON response.
     """
-    return requests.Request(
+    return Request(
         method = 'POST',
         url = 'https://oauth.secure.pixiv.net/auth/token',
         headers = { 
-            'Authority': 'oauth.secure.pixiv.net',
+            'Authority':    'oauth.secure.pixiv.net',
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         data = {

@@ -24,11 +24,8 @@ def get_auth_token(email: str, password: str) -> Tuple[str, int]:
     """
     try:
         json = models.get_auth_token(email, password)
-        validate.json(json)
         return json['response']['refresh_token'], json['response']['expires_in']
-    except exceptions.InvalidStatusCode as e:
-        raise e
-    except exceptions.InvalidJSONResponse as e:
+    except Exception as e:
         raise e
 
 
@@ -45,9 +42,6 @@ def renew_auth_token(auth_token: str) -> Tuple[str, int]:
     """
     try:
         json = models.renew_auth_token(auth_token)
-        validate.json(json)
         return json['response']['refresh_token'], json['response']['expires_in']
-    except exceptions.InvalidStatusCode as e:
-        raise e
-    except exceptions.InvalidJSONResponse as e:
+    except Exception as e:
         raise e

@@ -6,7 +6,7 @@ pixivpy common decorator functions.
 
 import requests
 from functools import wraps
-from typing import Dict, Callable, Any
+from typing import Dict, Callable, Any, List, Tuple
 from .exceptions import InvalidStatusCode
 
 
@@ -31,7 +31,7 @@ def validate(validators: List[Tuple[Callable[[Any],bool], Exception]]):
     return decorator
 
 
-def request(expected_code: int):
+def request(expected_code: int) -> Dict:
     """ Decorator for making requests using a Request object model returned by the decorated 
     function with support for status code validation.
 

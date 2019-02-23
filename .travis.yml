@@ -7,4 +7,4 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script: 
-  - python3.6 -m pytest --ignore=tests/auth
+  - python3.6 -m pytest

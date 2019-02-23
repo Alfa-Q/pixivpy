@@ -7,7 +7,6 @@ Layer above the models module for extracting data from the JSON response.
 import requests
 from typing import Tuple
 from pixivpy.auth import models
-from pixivpy.common import validate, exceptions
 
 
 def get_auth_token(email: str, password: str) -> Tuple[str, int]:

@@ -12,7 +12,7 @@ class InvalidStatusCode(Exception):
     pass
 
 
-class InvalidJSONResponse(Exception):
+class InvalidJsonResponse(Exception):
     """
     Exception which indicates that the JSON response received by the request call was invalid.
     """

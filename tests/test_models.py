@@ -64,10 +64,12 @@ def test_model_invalid_status_code(session_mock, model: Callable, m_args, status
     
 
 @pytest.mark.parametrize("model, m_args, status_code, json", [
-    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'refresh_token'}}),
-    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'key': 'value'}}),
-    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'refresh_token'}}),
-    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'key': 'value'}}) 
+    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'refresh_token': 'valid-token'}}),
+    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'expires_in': 1000}}),
+    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'random_key': 'some-value'}}),
+    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'refresh_token': 'valid-token'}}),
+    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'expires_in': 1000}}),
+    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'random_key': 'some-value'}})
 ])
 @patch('requests.Session')
 def test_model_valid_status_code_invalid_json(session_mock, model: Callable, m_args, status_code: int, json: Dict):
@@ -93,8 +95,8 @@ def test_model_valid_status_code_invalid_json(session_mock, model: Callable, m_a
 
 
 @pytest.mark.parametrize("model, m_args, status_code, json", [
-    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'refresh_token': 'token_val'}}),
-    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'refresh_token': 'token_val'}}) 
+    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}}),
+    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}}) 
 ])
 @patch('requests.Session')
 def test_model_valid_status_code_valid_json(session_mock, model: Callable, m_args, status_code: int, json: Dict):

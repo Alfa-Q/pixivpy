@@ -13,7 +13,8 @@ from pixivpy.common.exceptions import InvalidJsonResponse
     (lambda json: 'has_error' not in json.keys(), InvalidJsonResponse),
     (lambda json: 'response'  in json.keys(),     InvalidJsonResponse),
     (lambda json: dict == type(json['response']), InvalidJsonResponse),
-    (lambda json: 'refresh_token' in json['response'].keys(), InvalidJsonResponse)
+    (lambda json: 'refresh_token' in json['response'].keys(), InvalidJsonResponse),
+    (lambda json: 'expires_in'    in json['response'].keys(), InvalidJsonResponse)
 ])
 @request(expected_code=200)
 def get_auth_token(username: str, password: str):
@@ -49,7 +50,8 @@ def get_auth_token(username: str, password: str):
     (lambda json: 'has_error' not in json.keys(),    InvalidJsonResponse),
     (lambda json: 'response'  in json.keys(), InvalidJsonResponse),
     (lambda json: dict == type(json['response']), InvalidJsonResponse),
-    (lambda json: 'refresh_token' in json['response'].keys(), InvalidJsonResponse)
+    (lambda json: 'refresh_token' in json['response'].keys(), InvalidJsonResponse),
+    (lambda json: 'expires_in'    in json['response'].keys(), InvalidJsonResponse)
 ])
 @request(expected_code=200)
 def renew_auth_token(auth_token: str):

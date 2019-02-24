@@ -5,16 +5,9 @@ Pixiv application API request models for getting raw JSON response.
 """
 
 from requests import Request
-from pixivpy.common.decors import request, validate
-from pixivpy.common.exceptions import InvalidJsonResponse
+from pixivpy.common.decors import request
 
 
-@validate([
-    (lambda json: 'error' not in json.keys(),     InvalidJsonResponse),
-    (lambda json: 'bookmark_tags' in json.keys(), InvalidJsonResponse),
-    (lambda json: 'next_url' in json.keys(),      InvalidJsonResponse),
-    (lambda json: list == type(json['bookmark_tags']), InvalidJsonResponse)
-])
 @request(expected_code=200)
 def get_bookmark_tags(user_id: str, restrict: str, auth_token: str):
     """ Retrieves the user's bookmark tags for the particular bookmark type (private or public).
@@ -34,12 +27,6 @@ def get_bookmark_tags(user_id: str, restrict: str, auth_token: str):
     )
 
 
-@validate([
-    (lambda json: 'error' not in json.keys(),    InvalidJsonResponse),
-    (lambda json: 'illusts' in json.keys(),      InvalidJsonResponse),
-    (lambda json: 'next_url' in json.keys(),     InvalidJsonResponse),
-    (lambda json: list == type(json['illusts']), InvalidJsonResponse)
-])
 @request(expected_code=200)
 def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, auth_token: str):
     """ Retrieves the bookmarks for a specified user.
@@ -68,12 +55,6 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, a
     )
 
 
-@validate([
-    (lambda json: 'error' not in json.keys(),     InvalidJsonResponse),
-    (lambda json: 'comments' in json.keys(),      InvalidJsonResponse),
-    (lambda json: 'next_url' in json.keys(),      InvalidJsonResponse),
-    (lambda json: list == type(json['comments']), InvalidJsonResponse),
-])
 @request(expected_code=200)
 def get_illust_comments(illust_id: str, auth_token: str):
     """ Retrieves the comments on an illustration.

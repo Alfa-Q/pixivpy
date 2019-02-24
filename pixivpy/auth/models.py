@@ -5,17 +5,9 @@ Authentication request models for getting raw JSON response.
 """
 
 from requests import Request
-from pixivpy.common.decors import request, validate
-from pixivpy.common.exceptions import InvalidJsonResponse
+from pixivpy.common.decors import request
 
 
-@validate([
-    (lambda json: 'has_error' not in json.keys(), InvalidJsonResponse),
-    (lambda json: 'response'  in json.keys(),     InvalidJsonResponse),
-    (lambda json: dict == type(json['response']), InvalidJsonResponse),
-    (lambda json: 'refresh_token' in json['response'].keys(), InvalidJsonResponse),
-    (lambda json: 'expires_in'    in json['response'].keys(), InvalidJsonResponse)
-])
 @request(expected_code=200)
 def get_auth_token(username: str, password: str):
     """ Retrieves the auth bearer token used for making API requests.
@@ -46,13 +38,6 @@ def get_auth_token(username: str, password: str):
     )
 
 
-@validate([
-    (lambda json: 'has_error' not in json.keys(),    InvalidJsonResponse),
-    (lambda json: 'response'  in json.keys(),        InvalidJsonResponse),
-    (lambda json: dict == type(json['response']),    InvalidJsonResponse),
-    (lambda json: 'refresh_token' in json['response'].keys(), InvalidJsonResponse),
-    (lambda json: 'expires_in'    in json['response'].keys(), InvalidJsonResponse)
-])
 @request(expected_code=200)
 def renew_auth_token(auth_token: str):
     """ Renews an auth bearer token for making API requests.

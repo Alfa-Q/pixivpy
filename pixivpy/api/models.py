@@ -5,12 +5,18 @@ Pixiv application API request models for getting raw JSON response.
 """
 
 from requests import Request
-from pixivpy.common.decors import request
-from typing import Dict
+from pixivpy.common.decors import request, validate
+from pixivpy.common.exceptions import InvalidJsonResponse
 
 
+@validate([
+    (lambda json: 'error' not in json.keys(),     InvalidJsonResponse),
+    (lambda json: 'bookmark_tags' in json.keys(), InvalidJsonResponse),
+    (lambda json: 'next_url' in json.keys(),      InvalidJsonResponse),
+    (lambda json: list == type(json['bookmark_tags']), InvalidJsonResponse)
+])
 @request(expected_code=200)
-def get_bookmark_tags(user_id: str, restrict: str, auth_token: str) -> Dict:
+def get_bookmark_tags(user_id: str, restrict: str, auth_token: str):
     """ Retrieves the user's bookmark tags for the particular bookmark type (private or public).
 
     Parameters:
@@ -28,15 +34,23 @@ def get_bookmark_tags(user_id: str, restrict: str, auth_token: str) -> Dict:
     )
 
 
+@validate([
+    (lambda json: 'error' not in json.keys(),    InvalidJsonResponse),
+    (lambda json: 'illusts' in json.keys(),      InvalidJsonResponse),
+    (lambda json: 'next_url' in json.keys(),     InvalidJsonResponse),
+    (lambda json: list == type(json['illusts']), InvalidJsonResponse)
+])
 @request(expected_code=200)
-def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, auth_token: str) -> Dict:
+def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, auth_token: str):
     """ Retrieves the bookmarks for a specified user.
 
     Parameters:
         user_id: The Pixiv user ID.
         restrict: Work restrictions, either 'public' or 'private.'
-        max_bookmark_id: Optional parameter specifying the ending point of the bookmarks to retrieve.   // IF LEFT EMPTY, DEFAULTS TO JUST FIRST X NUMBER OF ILLUST BOOKMARKS
-        tag: A bookmark tag that is in the user's tag options, dependent on the restrict mode.  // MAY NEED TO BE IN JAPANESE?
+        max_bookmark_id: Optional parameter specifying the ending point of the bookmarks to retrieve.
+            If left empty, only one chunk of bookmarks is retrieved, starting from the beginning of 
+            the most recent bookmarks for that user.
+        tag: A bookmark tag that is in the user's tag options, dependent on the restrict mode.
         auth_token: The auth bearer token.
     
     Returns: A JSON response containing bookmarks information.

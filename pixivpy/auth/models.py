@@ -31,7 +31,7 @@ def get_auth_token(username: str, password: str):
         url = 'https://oauth.secure.pixiv.net/auth/token',
         headers = { 
             'Authority':    'oauth.secure.pixiv.net',
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
         data = {
             'client_id':     'MOBrBDS8blbauoSck0ZfDbtuzpyT',                
@@ -48,8 +48,8 @@ def get_auth_token(username: str, password: str):
 
 @validate([
     (lambda json: 'has_error' not in json.keys(),    InvalidJsonResponse),
-    (lambda json: 'response'  in json.keys(), InvalidJsonResponse),
-    (lambda json: dict == type(json['response']), InvalidJsonResponse),
+    (lambda json: 'response'  in json.keys(),        InvalidJsonResponse),
+    (lambda json: dict == type(json['response']),    InvalidJsonResponse),
     (lambda json: 'refresh_token' in json['response'].keys(), InvalidJsonResponse),
     (lambda json: 'expires_in'    in json['response'].keys(), InvalidJsonResponse)
 ])
@@ -67,7 +67,7 @@ def renew_auth_token(auth_token: str):
         url = 'https://oauth.secure.pixiv.net/auth/token',
         headers = { 
             'Authority':    'oauth.secure.pixiv.net',
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
         data = {
             'client_id':     'MOBrBDS8blbauoSck0ZfDbtuzpyT',               

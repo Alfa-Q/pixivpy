@@ -7,7 +7,7 @@ Test cases for pixivpy authentication and api models.
 import pytest
 from typing import Callable, Dict               # typing support for function arguments
 from unittest.mock import patch, MagicMock      # mocking support
-from pixivpy.api  import models as apimodels    # api models to test (Not used yet)
+from pixivpy.api  import models as apimodels    # api models to test
 from pixivpy.auth import models as authmodels   # authentication models to test
 from pixivpy.common import exceptions           # exceptions to catch
 
@@ -39,10 +39,11 @@ def create_mock_response(status_code: int, json: Dict=None):
 
 """ --------------------------------------- Test Cases ---------------------------------------- """
 @pytest.mark.parametrize("model, m_args, status_code", [
-    (authmodels.get_auth_token,   ['email','password'], 201),
-    (authmodels.renew_auth_token, ['some-valid-token'], 201),
-    (apimodels.get_bookmark_tags, ['12345','public','some-valid-token'], 201),
-    (apimodels.get_bookmarks,     ['12345','public',None,None,'some-valid-token'], 201)
+    (authmodels.get_auth_token,     ['email','password'], 201),
+    (authmodels.renew_auth_token,   ['some-valid-token'], 201),
+    (apimodels.get_bookmark_tags,   ['12345','public','some-valid-token'], 201),
+    (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 201),
+    (apimodels.get_illust_comments, ['12345','some-valid-token'], 201)
 ])
 @patch('requests.Session')
 def test_model_invalid_status_code(session_mock, model: Callable, m_args, status_code: int):
@@ -83,8 +84,12 @@ def test_model_invalid_status_code(session_mock, model: Callable, m_args, status
     (apimodels.get_bookmark_tags, ['12345','private','some-valid-token'], 200, {'next_url':None}),
     
     (apimodels.get_bookmarks, ['12345','public',None,None,'some-valid-token'], 200, {'error':{'user_message':'','message':'{\u0022restrict\u0022:[\u0022Restrict contains invalid value\u0022]}','reason':'','user_message_details':{}}}),
-    (apimodels.get_bookmarks, ['12345','public',None,None,'some-valid-token'], 200, {'illusts':[]}),
-    (apimodels.get_bookmarks, ['12345','public',None,None,'some-valid-token'], 200, {'next_url':None})
+    (apimodels.get_bookmarks, ['12345','public',None,None,'some-valid-token'], 200, {'illusts':[]}),        # NEED BOTH
+    (apimodels.get_bookmarks, ['12345','public',None,None,'some-valid-token'], 200, {'next_url':None}),
+
+    (apimodels.get_illust_comments, ['12345','some-valid-token'], 200, {'error':{'user_message':'','message':'Error occurred at the OAuth process. Please check your Access Token to fix this. Error Message: invalid_request','reason':'','user_message_details':{}}}),
+    (apimodels.get_illust_comments, ['12345','some-valid-token'], 200, {'comments':[]}),                    # NEED BOTH
+    (apimodels.get_illust_comments, ['12345','some-valid-token'], 200, {'next_url':None})
 ])
 @patch('requests.Session')
 def test_model_valid_status_code_invalid_json(session_mock, model: Callable, m_args, status_code: int, json: Dict):
@@ -110,10 +115,11 @@ def test_model_valid_status_code_invalid_json(session_mock, model: Callable, m_a
 
 
 @pytest.mark.parametrize("model, m_args, status_code, json", [
-    (authmodels.get_auth_token,   ['email','password'], 200, {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}}),
-    (authmodels.renew_auth_token, ['some-valid-token'], 200, {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}}),
-    (apimodels.get_bookmark_tags, ['12345','public','some-valid-token'], 200, {'bookmark_tags':[],'next_url':None}),
-    (apimodels.get_bookmarks,     ['12345','public',None,None,'some-valid-token'], 200, {'illusts':[],'next_url':None})
+    (authmodels.get_auth_token,     ['email','password'], 200, {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}}),
+    (authmodels.renew_auth_token,   ['some-valid-token'], 200, {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}}),
+    (apimodels.get_bookmark_tags,   ['12345','public','some-valid-token'], 200, {'bookmark_tags':[],'next_url':None}),
+    (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 200, {'illusts':[],'next_url':None}),
+    (apimodels.get_illust_comments, ['12345','some-valid-token'], 200, {'comments':[],'next_url':None})
 ])
 @patch('requests.Session')
 def test_model_valid_status_code_valid_json(session_mock, model: Callable, m_args, status_code: int, json: Dict):

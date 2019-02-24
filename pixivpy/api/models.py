@@ -53,7 +53,7 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, a
         tag: A bookmark tag that is in the user's tag options, dependent on the restrict mode.
         auth_token: The auth bearer token.
     
-    Returns: A JSON response containing bookmarks information.
+    Returns: A JSON response containing illustrations from a particular users bookmarks.
     """
     return Request(
         method = 'GET',
@@ -63,6 +63,32 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, a
             'restrict': restrict,
             'max_bookmark_id': max_bookmark_id,
             'tag':  tag
+        },
+        headers = { 'authorization': f'Bearer {auth_token}' }
+    )
+
+
+@validate([
+    (lambda json: 'error' not in json.keys(),     InvalidJsonResponse),
+    (lambda json: 'comments' in json.keys(),      InvalidJsonResponse),
+    (lambda json: 'next_url' in json.keys(),      InvalidJsonResponse),
+    (lambda json: list == type(json['comments']), InvalidJsonResponse),
+])
+@request(expected_code=200)
+def get_illust_comments(illust_id: str, auth_token: str):
+    """ Retrieves the comments on an illustration.
+
+    Parameters:
+        illust_id:  The illustration ID.
+        auth_token: The auth bearer token.
+    
+    Returns: A JSON response containing comments from a particular illustration.
+    """
+    return Request(
+        method = 'GET',
+        url = f'https://app-api.pixiv.net/v2/illust/comments',
+        params = {
+            'illust_id': illust_id
         },
         headers = { 'authorization': f'Bearer {auth_token}' }
     )

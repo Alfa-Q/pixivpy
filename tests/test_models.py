@@ -100,8 +100,7 @@ def test_model_valid_status_code_invalid_json(session_mock, model: Callable, m_a
 ])
 @patch('requests.Session')
 def test_model_valid_status_code_valid_json(session_mock, model: Callable, m_args, status_code: int, json: Dict):
-    """ Test cases for a model when the status code is valid, but the json response is invalid due 
-    to missing keys.
+    """ Test cases for a model when the status code is valid and the json response is valid.
     
     Parameters:
         session_mock: The mock object for 'requests.Session' which is created by patch decorator.

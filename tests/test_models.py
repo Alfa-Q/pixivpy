@@ -98,4 +98,5 @@ def test_model_valid_status_code(session_mock: MagicMock, model: Callable, m_arg
         send = MagicMock(return_value=response_mock)
     )
     # Run with the mocked session and mock response
-    model(*m_args)
+    response = model(*m_args)
+    assert dict == type(response)

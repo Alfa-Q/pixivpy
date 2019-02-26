@@ -38,7 +38,7 @@ def test_auth_invalid_json(auth_fn: Callable, args, json: Dict):
     auth_func_mock = auth_func_patch.start()
     auth_func_mock.return_value = json
 
-    # Run with the mocked model function with returned json
+    # Run with the mocked model function with returned invalid json
     with pytest.raises(InvalidJsonResponse) as e:
         auth_fn(*args) 
 

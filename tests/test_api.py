@@ -2,6 +2,9 @@
 tests.test_api
 --------------
 Pixiv API tests.
+
+TODO: Refactor the parametrization decorators to load each API call testcases from the 
+    api_test_info mapper.
 """    
 
 import os, copy, json
@@ -24,6 +27,11 @@ api_test_info = {
         'fn': api.get_bookmark_tags,
         'invalid_json': f'{testcase_dir}/get_bookmark_tags_invalid.json',
         'valid_json':   f'{testcase_dir}/get_bookmark_tags_valid.json'
+    },
+    'get_illust_comments': {
+        'fn': api.get_illust_comments,
+        'invalid_json': f'{testcase_dir}/get_illust_comments_invalid.json',
+        'valid_json':   f'{testcase_dir}/get_illust_comments_valid.json'
     }
 }
 
@@ -37,6 +45,10 @@ api_test_info = {
     [
         (api_test_info['get_bookmark_tags']['fn'],  ['12345','public',None,'some-valid-token'], json.loads(json_testcase)) \
             for json_testcase in open(api_test_info['get_bookmark_tags']['invalid_json'], encoding='utf-8').readlines()
+    ]+
+    [
+        (api_test_info['get_illust_comments']['fn'],  ['12345',None,'some-valid-token'], json.loads(json_testcase)) \
+            for json_testcase in open(api_test_info['get_illust_comments']['invalid_json'], encoding='utf-8').readlines()
     ]
 )
 def test_api_gen_invalid_json(api_gen_fn: Callable, args, invalid_json: Dict):
@@ -75,6 +87,11 @@ def test_api_gen_invalid_json(api_gen_fn: Callable, args, invalid_json: Dict):
         (api_test_info['get_bookmark_tags']['fn'],  ['12345','public',None,'some-valid-token'], json.loads(json_testcase), stop_json) \
             for stop_json in [{'bookmark_tags':[], 'next_url': None}, {'bookmark_tags':[]}] \
             for json_testcase in open(api_test_info['get_bookmark_tags']['valid_json'], encoding='utf-8').readlines()
+    ]+
+    [
+        (api_test_info['get_illust_comments']['fn'],  ['12345',None,'some-valid-token'], json.loads(json_testcase), stop_json) \
+        for stop_json in [{'comments':[], 'next_url': None}, {'comments':[]}] \
+        for json_testcase in open(api_test_info['get_illust_comments']['valid_json'], encoding='utf-8').readlines()
     ]
 )
 @pytest.mark.parametrize("repeat", range(1, 5))

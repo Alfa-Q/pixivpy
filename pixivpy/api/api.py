@@ -111,3 +111,29 @@ def get_bookmarks(user_id: str, restrict: str, tag: str, auth_token: str) -> Gen
     )
     for data in generator:
         yield data
+
+
+#TODO: Fix documentation
+def get_illust_comments(illust_id: str, offset: str, auth_token: str) -> Generator[List[Dict], None, None]:
+    """ Retrieves the comments for a specified user.
+
+    Parameters:
+        illust_id: The Illustration ID to 
+        offset: Optional parameter specifying the 
+        auth_token: The auth bearer token.
+
+    Returns: A chunk of JSON comment information for a particular illustration.
+    """
+    generator = _generator_api(
+        api_model = models.get_illust_comments,
+        kwargs = {
+            'illust_id': illust_id,
+            'offset': offset,
+            'auth_token': auth_token
+        },
+        valid_json = lambda json: 'comments' in json.keys(),
+        param_key = 'offset',
+        transform_json = lambda json: [ comment for comment in json['comments'] ]
+    )
+    for data in generator:
+        yield data

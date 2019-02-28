@@ -43,7 +43,7 @@ def create_mock_response(status_code: int, json: Dict=None):
     (authmodels.renew_auth_token,   ['some-valid-token'], 201),
     (apimodels.get_bookmark_tags,   ['12345','public',None,'some-valid-token'], 201),
     (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 201),
-    (apimodels.get_illust_comments, ['12345','some-valid-token'], 201)
+    (apimodels.get_illust_comments, ['12345',None,'some-valid-token'], 201)
 ])
 @patch('requests.Session')
 def test_model_invalid_status_code(session_mock: MagicMock, model: Callable, m_args: List, status_code: int):
@@ -75,7 +75,7 @@ def test_model_invalid_status_code(session_mock: MagicMock, model: Callable, m_a
     (authmodels.renew_auth_token,   ['some-valid-token'], 200),
     (apimodels.get_bookmark_tags,   ['12345','public',None,'some-valid-token'], 200),
     (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 200),
-    (apimodels.get_illust_comments, ['12345','some-valid-token'], 200)
+    (apimodels.get_illust_comments, ['12345',None,'some-valid-token'], 200)
 ])
 @patch('requests.Session')
 def test_model_valid_status_code(session_mock: MagicMock, model: Callable, m_args: List, status_code: int):

@@ -61,11 +61,12 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, a
 
 
 @request(expected_code=200)
-def get_illust_comments(illust_id: str, auth_token: str):
+def get_illust_comments(illust_id: str, offset: str, auth_token: str):
     """ Retrieves the comments on an illustration.
 
     Parameters:
         illust_id:  The illustration ID.
+        offset: The offset from the start of a list containing all of the illustration comments.
         auth_token: The auth bearer token.
     
     Returns: A JSON response containing comments from a particular illustration.
@@ -74,7 +75,8 @@ def get_illust_comments(illust_id: str, auth_token: str):
         method = 'GET',
         url = f'https://app-api.pixiv.net/v2/illust/comments',
         params = {
-            'illust_id': illust_id
+            'illust_id': illust_id,
+            'offset': offset
         },
         headers = { 'authorization': f'Bearer {auth_token}' }
     )

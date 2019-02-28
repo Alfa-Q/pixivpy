@@ -41,7 +41,7 @@ def create_mock_response(status_code: int, json: Dict=None):
 @pytest.mark.parametrize("model, m_args, status_code", [
     (authmodels.get_auth_token,     ['email','password'], 201),
     (authmodels.renew_auth_token,   ['some-valid-token'], 201),
-    (apimodels.get_bookmark_tags,   ['12345','public','some-valid-token'], 201),
+    (apimodels.get_bookmark_tags,   ['12345','public',None,'some-valid-token'], 201),
     (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 201),
     (apimodels.get_illust_comments, ['12345','some-valid-token'], 201)
 ])
@@ -73,7 +73,7 @@ def test_model_invalid_status_code(session_mock: MagicMock, model: Callable, m_a
 @pytest.mark.parametrize("model, m_args, status_code", [
     (authmodels.get_auth_token,     ['email','password'], 200),
     (authmodels.renew_auth_token,   ['some-valid-token'], 200),
-    (apimodels.get_bookmark_tags,   ['12345','public','some-valid-token'], 200),
+    (apimodels.get_bookmark_tags,   ['12345','public',None,'some-valid-token'], 200),
     (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 200),
     (apimodels.get_illust_comments, ['12345','some-valid-token'], 200)
 ])

@@ -53,6 +53,35 @@ def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_j
         raise e
 
 
+def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str):
+    """ Retrieves the bookmark tags for a specified user.
+
+    Parameters:
+        user_id: The Pixiv user ID.
+        restrict: Work restrictions, either 'public' or 'private.'
+        offset: Optional parameter specifying the ending point of the bookmark tags to retrieve.
+            If left empty, only one chunk of bookmark tags is retrieved, starting from the 
+            beginning the list which contains all of the user's bookmark tags.
+        auth_token: The auth bearer token.
+    
+    Returns: A chunk of bookmark tags from a particular user's bookmarks.
+    """
+    generator = _generator_api(
+        api_model = models.get_bookmark_tags,
+        kwargs = {
+            'user_id': user_id,
+            'restrict': restrict,
+            'offset': offset,
+            'auth_token': auth_token 
+        },
+        valid_json = lambda json: 'bookmark_tags' in json.keys(),
+        param_key = 'offset',
+        transform_json = lambda json: [ tag for tag in json['bookmark_tags'] ]
+    )
+    for data in generator:
+        yield data
+
+
 def get_bookmarks(user_id: str, restrict: str, tag: str, auth_token: str) -> Generator[List[Dict], None, None]:
     """ Retrieves the bookmarks for a specified user.
 

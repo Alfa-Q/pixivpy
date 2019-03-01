@@ -22,7 +22,7 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str)
     """
     return Request(
         method = 'GET',
-        url = f'https://app-api.pixiv.net/v1/user/bookmark-tags/illust',
+        url = 'https://app-api.pixiv.net/v1/user/bookmark-tags/illust',
         params = { 
             'user_id': user_id, 
             'restrict': restrict,
@@ -49,7 +49,7 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, a
     """
     return Request(
         method = 'GET',
-        url = f'https://app-api.pixiv.net/v1/user/bookmarks/illust',
+        url = 'https://app-api.pixiv.net/v1/user/bookmarks/illust',
         params = { 
             'user_id': user_id, 
             'restrict': restrict,
@@ -73,7 +73,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str):
     """
     return Request(
         method = 'GET',
-        url = f'https://app-api.pixiv.net/v2/illust/comments',
+        url = 'https://app-api.pixiv.net/v2/illust/comments',
         params = {
             'illust_id': illust_id,
             'offset': offset
@@ -104,7 +104,7 @@ def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_
     """
     return Request(
         method = 'GET',
-        url = f'https://app-api.pixiv.net/v1/illust/recommended',
+        url = 'https://app-api.pixiv.net/v1/illust/recommended',
         params = {
             'filter': filter,
             'include_ranking_illusts': include_ranking_illusts,
@@ -130,10 +130,32 @@ def get_articles(filter: str, category: str, auth_token: str):
     """
     return Request(
         method = 'GET',
-        url = f'https://app-api.pixiv.net/v1/spotlight/articles',
+        url = 'https://app-api.pixiv.net/v1/spotlight/articles',
         params = {
             'filter': filter,
             'category': category
+        },
+        headers = { 'authorization': f'Bearer {auth_token}' }
+    )
+
+
+@request(expected_code=200)
+def get_related(filter: str, illust_id: str, auth_token: str):
+    """ Retrieves illustrations related to the one provided.
+
+    Parameters:
+        filter: A filter option (i.e. 'for_android')
+        illust_id: The illustration which is used to find similar illustrations.
+        auth_token: The auth bearer token.
+
+    Returns: A JSON response containing related illustrations.
+    """
+    return Request(
+        method = 'GET',
+        url = f'https://app-api.pixiv.net/v2/illust/related',
+        params = {
+            'filter': filter,
+            'illust_id': illust_id
         },
         headers = { 'authorization': f'Bearer {auth_token}' }
     )

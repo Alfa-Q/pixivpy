@@ -84,7 +84,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str):
 
 
 @request(expected_code=200)
-def get_recommended(filter: str, include_ranking_illusts: str, include_privacy_policy: str, 
+def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_policy: bool, 
                     min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
                     offset: str, auth_token: str):
     """ Retrieves the recommended illustrations for a user.
@@ -94,7 +94,7 @@ def get_recommended(filter: str, include_ranking_illusts: str, include_privacy_p
         include_ranking_illusts: Whether or not the recommendations should include illusts 
             that are currently in the different Pixiv rankings (weekly, rookie, daily, etc.)
         include_privacy_policy:  Whether or not the privacy policy should be included (defaults to True).
-        min_bookmark_id_for_recent_illust:  Most recent illustration used for finding recommended 
+        min_bookmark_id_for_recent_illust:  Most recent bookmark used for finding recommended 
             bookmarks between some range of IDs and filtering ones that are similar (on server side).
         max_bookmark_id_for_recommend:      Max bookmark ID for finding a recommendation.
         offset: The offset from the start of a list containing all of the recommended illustrations.

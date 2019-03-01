@@ -34,6 +34,7 @@ auth_test_info = {
 }
 
 
+""" --------------------------------------- Test Cases ---------------------------------------- """
 @pytest.mark.parametrize("auth_fn, args, invalid_json",
     # Use list comprehension to load the testcases for each auth call from their associated file.
     [

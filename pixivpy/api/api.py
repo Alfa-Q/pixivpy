@@ -54,16 +54,16 @@ def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_j
         raise e
 
 
-def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str):
+def get_bookmark_tags(auth_token: str, user_id: str, restrict: str='public', offset: str=None):
     """ Retrieves the bookmark tags for a specified user.
 
     Parameters:
+        auth_token: The auth bearer token.
         user_id: The Pixiv user ID.
         restrict: Work restrictions, either 'public' or 'private.'
-        offset: Optional parameter specifying the starting point within the complete list of user 
-            bookmark tags.  If left empty, only one chunk of the user's bookmark tags is retrieved,
+        offset: Optional parameter specifying the starting point within the complete list of user \
+            bookmark tags.  If left empty, only one chunk of the user's bookmark tags is retrieved, \
             starting from the beginning the complete list of the user's bookmark tags.
-        auth_token: The auth bearer token.
     
     Returns: A chunk of bookmark tags from a particular user's bookmarks.
     """
@@ -83,17 +83,15 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str)
         yield data
 
 
-def get_bookmarks(user_id: str, restrict: str, tag: str, auth_token: str) -> Generator[List[Dict], None, None]:
+def get_bookmarks(auth_token: str, user_id: str, restrict: str='public', tag: str=None) -> Generator[List[Dict], None, None]:
     """ Retrieves the bookmarks for a specified user.
 
     Parameters:
-        user_id: The Pixiv user ID.
-        restrict: Work restrictions, either 'public' or 'private.'
-        max_bookmark_id: Optional parameter specifying the ending point of the bookmarks to retrieve.
-            If left empty, only one chunk of bookmarks is retrieved, starting from the beginning of 
-            the most recent bookmarks for that user.
-        tag: A bookmark tag that is in the user's tag options, dependent on the restrict mode.
         auth_token: The auth bearer token.
+        user_id: The Pixiv user ID to retrieve bookmarks from.
+        restrict: Specifies the work restrictions, either 'public' or 'private'
+        tag: Optional parameter specifying a bookmark tag that is in the user's tag options, \
+            dependent on the restrict mode.
     
     Returns: A chunk of JSON illustration information from a particular user's bookmarks.
     """
@@ -114,15 +112,15 @@ def get_bookmarks(user_id: str, restrict: str, tag: str, auth_token: str) -> Gen
         yield data
 
 
-def get_illust_comments(illust_id: str, offset: str, auth_token: str) -> Generator[List[Dict], None, None]:
+def get_illust_comments(auth_token: str, illust_id: str, offset: str=None) -> Generator[List[Dict], None, None]:
     """ Retrieves the comments for a specified user.
 
     Parameters:
-        illust_id: The Illustration ID to 
-        offset: Optional parameter specifying the starting point within the complete list of
-            comments (string integer).  If left empty, only one chunk of the comments is 
-            retrieved, starting from the beginning of the complete list of comments.
         auth_token: The auth bearer token.
+        illust_id: The illustration ID to identify which comments to retrieve.
+        offset: Optional parameter specifying the starting point within the complete list of \
+            comments (string integer).  If left empty, only one chunk of the comments is  \
+            retrieved, starting from the beginning of the complete list of comments. 
 
     Returns: A chunk of JSON comment information for a particular illustration.
     """
@@ -141,21 +139,24 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str) -> Generat
         yield data
 
 
-def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_policy: bool, 
-                    min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
-                    offset: str, auth_token: str) -> Generator[List[Dict], None, None]:
+def get_recommended(auth_token: str, filter: str='for_android', include_ranking_illusts: bool=True, 
+                    include_privacy_policy: bool=True, min_bookmark_id_for_recent_illust: str=None, 
+                    max_bookmark_id_for_recommend: str=None, offset: str=None) -> Generator[List[Dict], None, None]:
     """ Retrieves the recommended illustrations for a user.
 
     Parameters:
-        filter: A filter option (i.e. 'for_android')
-        include_ranking_illusts: Whether or not the recommendations should include illusts 
-            that are currently in the different Pixiv rankings (weekly, rookie, daily, etc.)
-        include_privacy_policy:  Whether or not the privacy policy should be included (defaults to True).
-        min_bookmark_id_for_recent_illust:  Most recent illustration used for finding recommended 
-            bookmarks between some range of IDs and filtering ones that are similar (on server side).
-        max_bookmark_id_for_recommend:      Max bookmark ID for finding a recommendation.
-        offset: The offset from the start of a list containing all of the recommended illustrations.
         auth_token: The auth bearer token.
+        filter: Parameter which is used by Pixiv backend to filter the results somehow.
+        include_ranking_illusts: Whether or not the recommendations should include illusts \
+            that are currently in the different Pixiv rankings (weekly, rookie, daily, etc.)
+        include_privacy_policy:  Whether or not the privacy policy should be included (defaults to True). \
+        min_bookmark_id_for_recent_illust:  Optional parameter which specifies the most recent \
+            illustration ID. Used by Pixiv backend for finding recommended bookmarks between \
+            some range of IDs and filtering ones out similar ones between this range.
+        max_bookmark_id_for_recommend: Optional parameter specifying the max bookmark ID for \
+            finding a recommendation.
+        offset: Optional parameter specifying the offset from the start of a list containing \
+            all of the recommended illustrations.
     
     Returns: A chunk of JSON recommended illustrations based on the last on a range of bookmark IDs.
     """

@@ -48,6 +48,13 @@ api_test_info = {
         'valid_json':   f'{testcase_dir}/get_recommended_valid.json',
         'valid_args':   ['for_android',True,True,'min-id','max-id',None,'some-valid-token'],
         'list_key':     'illusts'
+    },
+    'get_articles': {
+        'fn': api.get_articles,
+        'invalid_json': f'{testcase_dir}/get_articles_invalid.json',
+        'valid_json':   f'{testcase_dir}/get_articles_valid.json',
+        'valid_args':   ['some-valid-token'],
+        'list_key':     'spotlight_articles'
     }
 }
 

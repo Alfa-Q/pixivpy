@@ -177,3 +177,28 @@ def get_recommended(auth_token: str, filter: str='for_android', include_ranking_
     )
     for data in generator:
         yield data
+
+
+def get_articles(auth_token: str, filter: str='for_android', category: str='all'):
+    """ Retrieves Pixiv articles for a particular category.
+
+    Parameters:
+        auth_token: The auth bearer token.
+        filter: Parameter which is used by Pixiv backend to filter the results somehow.
+        category: Parameter which specifies which category to grab articles from (defaults to all). 
+
+    Returns: A chunk of JSON articles based on the category and platform.
+    """
+    generator = _generator_api(
+        api_model = models.get_articles,
+        kwargs = {
+            'filter': filter,
+            'category': category,
+            'auth_token': auth_token
+        },
+        valid_json = lambda json: 'spotlight_articles' in json.keys(),
+        param_keys = ['offset'],
+        transform_json = lambda json: [ article for article in json['spotlight_articles'] ]
+    )
+    for data in generator:
+        yield data

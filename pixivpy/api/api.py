@@ -10,7 +10,7 @@ from typing import Generator, Dict, List, Callable, Any
 from pixivpy.common.exceptions import InvalidJsonResponse
 
 
-def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_json: Callable[[Dict], bool], param_key: str, transform_json: Callable[[Dict], Any]):
+def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_json: Callable[[Dict], bool], param_keys: [str], transform_json: Callable[[Dict], Any]):
     """ API helper generator function which continues to retrieve data via API calls until the 
     'next_url' key is mapped to an empty string, null value, or the key does not exist.
 
@@ -43,7 +43,8 @@ def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_j
             # If requires any parameter from the JSON response, set it to the kwargs
             if json['next_url'] != None and json['next_url'] !="" and json['next_url'] != 'first_run':
                 parsed = urlparse.urlparse(json['next_url'])
-                kwargs[param_key] = urlparse.parse_qs(parsed.query)[param_key][0]
+                for param_key in param_keys:
+                    kwargs[param_key] = urlparse.parse_qs(parsed.query)[param_key][0]
             
             # Yield the transformed results (list of particular fields, etc.)
             yield transform_json(json)
@@ -75,7 +76,7 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str)
             'auth_token': auth_token 
         },
         valid_json = lambda json: 'bookmark_tags' in json.keys(),
-        param_key = 'offset',
+        param_keys = ['offset'],
         transform_json = lambda json: [ tag for tag in json['bookmark_tags'] ]
     )
     for data in generator:
@@ -106,7 +107,7 @@ def get_bookmarks(user_id: str, restrict: str, tag: str, auth_token: str) -> Gen
             'auth_token': auth_token
         },
         valid_json = lambda json: 'illusts' in json.keys(),
-        param_key  = 'max_bookmark_id',
+        param_keys  = ['max_bookmark_id'],
         transform_json = lambda json: [ illust for illust in json['illusts'] ]
     )
     for data in generator:
@@ -133,7 +134,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str) -> Generat
             'auth_token': auth_token
         },
         valid_json = lambda json: 'comments' in json.keys(),
-        param_key = 'offset',
+        param_keys = ['offset'],
         transform_json = lambda json: [ comment for comment in json['comments'] ]
     )
     for data in generator:

@@ -59,9 +59,9 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str)
     Parameters:
         user_id: The Pixiv user ID.
         restrict: Work restrictions, either 'public' or 'private.'
-        offset: Optional parameter specifying the ending point of the bookmark tags to retrieve.
-            If left empty, only one chunk of bookmark tags is retrieved, starting from the 
-            beginning the list which contains all of the user's bookmark tags.
+        offset: Optional parameter specifying the starting point within the complete list of user 
+            bookmark tags.  If left empty, only one chunk of the user's bookmark tags is retrieved,
+            starting from the beginning the complete list of the user's bookmark tags.
         auth_token: The auth bearer token.
     
     Returns: A chunk of bookmark tags from a particular user's bookmarks.
@@ -113,13 +113,14 @@ def get_bookmarks(user_id: str, restrict: str, tag: str, auth_token: str) -> Gen
         yield data
 
 
-#TODO: Fix documentation
 def get_illust_comments(illust_id: str, offset: str, auth_token: str) -> Generator[List[Dict], None, None]:
     """ Retrieves the comments for a specified user.
 
     Parameters:
         illust_id: The Illustration ID to 
-        offset: Optional parameter specifying the 
+        offset: Optional parameter specifying the starting point within the complete list of
+            comments (string integer).  If left empty, only one chunk of the comments is 
+            retrieved, starting from the beginning of the complete list of comments.
         auth_token: The auth bearer token.
 
     Returns: A chunk of JSON comment information for a particular illustration.

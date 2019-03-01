@@ -2,9 +2,6 @@
 tests.test_api
 --------------
 Pixiv API tests.
-
-TODO: Refactor the parametrization decorators to load each API call testcases from the 
-    api_test_info mapper.
 """    
 
 import os, copy, json
@@ -15,40 +12,46 @@ from pixivpy.common.exceptions import InvalidJsonResponse   # expected exception
 from pixivpy import api                                     # api functions that are being tested
 
 
-# Test case paths
+# Test case mapper
+#   To setup testcases for an API generator function, it must contain the following fields:
+#       fn:             The API generator function to test.
+#       invalid_json:   Text file containing bad responses that should produce an exception, each testcase separated by newline in JSON format.
+#       valid_json:     Text file containing good responses, each testcase separated by newline in JSON format.
+#       valid_args:     List of valid function arguments. Ensures that only the extraction is being tested.
+#       list_key:       The key which contains the list of information to extract
 testcase_dir = os.path.dirname(__file__) + '/api_testcases'
 api_test_info = {
     'get_bookmarks': {
         'fn': api.get_bookmarks,
         'invalid_json': f'{testcase_dir}/get_bookmarks_invalid.json',
-        'valid_json':   f'{testcase_dir}/get_bookmarks_valid.json'
+        'valid_json':   f'{testcase_dir}/get_bookmarks_valid.json',
+        'valid_args':   ['12345','public',None,'some-valid-token'],
+        'list_key':     'illusts'
     },
     'get_bookmark_tags': {
         'fn': api.get_bookmark_tags,
         'invalid_json': f'{testcase_dir}/get_bookmark_tags_invalid.json',
-        'valid_json':   f'{testcase_dir}/get_bookmark_tags_valid.json'
+        'valid_json':   f'{testcase_dir}/get_bookmark_tags_valid.json',
+        'valid_args':   ['12345','public',None,'some-valid-token'],
+        'list_key':     'bookmark_tags'
     },
     'get_illust_comments': {
         'fn': api.get_illust_comments,
         'invalid_json': f'{testcase_dir}/get_illust_comments_invalid.json',
-        'valid_json':   f'{testcase_dir}/get_illust_comments_valid.json'
+        'valid_json':   f'{testcase_dir}/get_illust_comments_valid.json',
+        'valid_args':   ['12345',None,'some-valid-token'],
+        'list_key':     'comments' 
     }
 }
 
 
 @pytest.mark.parametrize("api_gen_fn, args, invalid_json",
     # Use list comprehension to load the testcases for each API call from their associated file.
-    [   # api_gen_fn                                # args                                      # invalid_json
-        (api_test_info['get_bookmarks']['fn'],      ['12345','public',None,'some-valid-token'], json.loads(json_testcase)) \
-            for json_testcase in open(api_test_info['get_bookmarks']['invalid_json'], encoding='utf-8').readlines() 
-    ]+
     [
-        (api_test_info['get_bookmark_tags']['fn'],  ['12345','public',None,'some-valid-token'], json.loads(json_testcase)) \
-            for json_testcase in open(api_test_info['get_bookmark_tags']['invalid_json'], encoding='utf-8').readlines()
-    ]+
-    [
-        (api_test_info['get_illust_comments']['fn'],  ['12345',None,'some-valid-token'], json.loads(json_testcase)) \
-            for json_testcase in open(api_test_info['get_illust_comments']['invalid_json'], encoding='utf-8').readlines()
+    #   api generator fn    list of valid api fn args   invalid json to test 
+        (test_info['fn'],   test_info['valid_args'],    json.loads(json_testcase))
+        for test_info in api_test_info.values()
+        for json_testcase in open(test_info['invalid_json'], encoding='utf-8').readlines()
     ]
 )
 def test_api_gen_invalid_json(api_gen_fn: Callable, args, invalid_json: Dict):
@@ -78,20 +81,12 @@ def test_api_gen_invalid_json(api_gen_fn: Callable, args, invalid_json: Dict):
 
 @pytest.mark.parametrize("api_gen_fn, args, valid_json, stop_json",
     # Use list comprehension to load the testcases for each API call from their associated file.
-    [   # api_gen_fn                                # args                                      # valid_json
-        (api_test_info['get_bookmarks']['fn'],      ['12345','public',None,'some-valid-token'], json.loads(json_testcase), stop_json) \
-            for stop_json in [{'illusts':[], 'next_url': None}, {'illusts':[]}] \
-            for json_testcase in open(api_test_info['get_bookmarks']['valid_json'], encoding='utf-8').readlines() 
-    ]+
     [
-        (api_test_info['get_bookmark_tags']['fn'],  ['12345','public',None,'some-valid-token'], json.loads(json_testcase), stop_json) \
-            for stop_json in [{'bookmark_tags':[], 'next_url': None}, {'bookmark_tags':[]}] \
-            for json_testcase in open(api_test_info['get_bookmark_tags']['valid_json'], encoding='utf-8').readlines()
-    ]+
-    [
-        (api_test_info['get_illust_comments']['fn'],  ['12345',None,'some-valid-token'], json.loads(json_testcase), stop_json) \
-        for stop_json in [{'comments':[], 'next_url': None}, {'comments':[]}] \
-        for json_testcase in open(api_test_info['get_illust_comments']['valid_json'], encoding='utf-8').readlines()
+    #   api generator fn    list of valid api fn args   valid json to test          stop json
+        (test_info['fn'],   test_info['valid_args'],    json.loads(json_testcase),  stop_json)
+        for test_info in api_test_info.values()
+        for json_testcase in open(test_info['valid_json'], encoding='utf-8').readlines()
+        for stop_json in [{test_info['list_key']:[], 'next_url': None}, {test_info['list_key']:[]}]
     ]
 )
 @pytest.mark.parametrize("repeat", range(1, 5))

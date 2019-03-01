@@ -49,6 +49,12 @@ model_test_info = {
         'valid_args':    ['for_android',True,True,'min-id','max-id',None,'some-valid-token'],
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
+    },
+    'get_articles': {
+        'fn': apimodels.get_articles,
+        'valid_args':    ['for_android','all','some-valid-token'],
+        'valid_codes':   [200],
+        'invalid_codes': [-200,302,400,403,404]
     }
 }
 

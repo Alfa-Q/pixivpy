@@ -115,3 +115,25 @@ def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_
         },
         headers = { 'authorization': f'Bearer {auth_token}' }
     )
+
+
+@request(expected_code=200)
+def get_articles(filter: str, category: str, auth_token):
+    """ Retrieves Pixiv articles from a particular category.
+
+    Parameters:
+        filter: A filter option (i.e. 'for_android')
+        category: The article category to retrieve from (i.e. 'spotlight')
+        auth_token: The auth bearer token.
+
+    Returns: A JSON response containing articles for the particular category.
+    """
+    return Request(
+        method = 'GET',
+        url = f'https://app-api.pixiv.net/v1/spotlight/articles',
+        params = {
+            'filter': filter,
+            'category': category
+        },
+        headers = { 'authorization': f'Bearer {auth_token}' }
+    )

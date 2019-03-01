@@ -12,6 +12,41 @@ from pixivpy.auth import models as authmodels               # authentication mod
 from pixivpy.common.exceptions import InvalidStatusCode     # exceptions to catch
 
 
+""" -------------------------------------- Test Mapping --------------------------------------- """
+model_test_info = {
+    'get_auth_token': {
+        'fn': authmodels.get_auth_token,
+        'valid_args':    ['email','password'],
+        'valid_codes':   [200],
+        'invalid_codes': [-200,302,400,403,404]
+    },
+    'renew_auth_token': {
+        'fn': authmodels.renew_auth_token,
+        'valid_args':    ['some-valid-token'], 
+        'valid_codes':   [200],
+        'invalid_codes': [-200,302,400,403,404]
+    },
+    'get_bookmark_tags': {
+        'fn': apimodels.get_bookmark_tags,
+        'valid_args':    ['12345','public',None,'some-valid-token'], 
+        'valid_codes':   [200],
+        'invalid_codes': [-200,302,400,403,404]
+    },
+    'get_bookmarks': {
+        'fn': apimodels.get_bookmarks,
+        'valid_args':    ['12345','public',None,None,'some-valid-token'],
+        'valid_codes':   [200],
+        'invalid_codes': [-200,302,400,403,404]
+    },
+    'get_illust_comments': {
+        'fn': apimodels.get_illust_comments,
+        'valid_args':    ['12345',None,'some-valid-token'],
+        'valid_codes':   [200],
+        'invalid_codes': [-200,302,400,403,404]
+    }
+}
+
+
 """ ------------------------------------ Helper Functions ------------------------------------- """
 def create_mock_response(status_code: int, json: Dict=None):
     """ Creates a mock object which mimics the behavior of the requests.Response object.
@@ -38,13 +73,14 @@ def create_mock_response(status_code: int, json: Dict=None):
 
 
 """ --------------------------------------- Test Cases ---------------------------------------- """
-@pytest.mark.parametrize("model, m_args, status_code", [
-    (authmodels.get_auth_token,     ['email','password'], 201),
-    (authmodels.renew_auth_token,   ['some-valid-token'], 201),
-    (apimodels.get_bookmark_tags,   ['12345','public',None,'some-valid-token'], 201),
-    (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 201),
-    (apimodels.get_illust_comments, ['12345',None,'some-valid-token'], 201)
-])
+@pytest.mark.parametrize("model, m_args, status_code", 
+    # Use list comprehension to create the testcases for each model from the model_test_info dict.
+    [
+        (test_info['fn'],   test_info['valid_args'],   status_code)
+        for test_info in model_test_info.values()
+        for status_code in test_info['invalid_codes']
+    ]
+)
 @patch('requests.Session')
 def test_model_invalid_status_code(session_mock: MagicMock, model: Callable, m_args: List, status_code: int):
     """ Test cases for a model when the status code is invalid.  Ensures that the InvalidStatusCode
@@ -70,13 +106,14 @@ def test_model_invalid_status_code(session_mock: MagicMock, model: Callable, m_a
         model(*m_args)
 
 
-@pytest.mark.parametrize("model, m_args, status_code", [
-    (authmodels.get_auth_token,     ['email','password'], 200),
-    (authmodels.renew_auth_token,   ['some-valid-token'], 200),
-    (apimodels.get_bookmark_tags,   ['12345','public',None,'some-valid-token'], 200),
-    (apimodels.get_bookmarks,       ['12345','public',None,None,'some-valid-token'], 200),
-    (apimodels.get_illust_comments, ['12345',None,'some-valid-token'], 200)
-])
+@pytest.mark.parametrize("model, m_args, status_code",
+    # Use list comprehension to create the testcases for each model from the model_test_info dict.
+    [
+        (test_info['fn'],   test_info['valid_args'],   status_code)
+        for test_info in model_test_info.values()
+        for status_code in test_info['valid_codes']
+    ]
+)
 @patch('requests.Session')
 def test_model_valid_status_code(session_mock: MagicMock, model: Callable, m_args: List, status_code: int):
     """ Test cases for a model when the status code is valid.  If the status code is valid, the

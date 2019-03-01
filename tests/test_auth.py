@@ -4,65 +4,90 @@ tests.test_auth
 Test cases for pixivpy authentication functions.
 """
 
-import pytest                                               # testcase parametrization and exception testing support
+import os, pytest, json                                     # testcase parametrization and exception testing support
 from typing import Callable, Dict                           # typing support for function signature
 from unittest.mock import patch, MagicMock                  # mocking support
 from pixivpy.common.exceptions import InvalidJsonResponse   # expected exceptions
 from pixivpy import auth                                    # auth functions that are being tested
 
 
-@pytest.mark.parametrize("auth_fn, args, json", [
-    (auth.get_auth_token,   ['email','password'], {'has_error':True,'errors':{'system':{'message':'Invalid grant_type parameter or parameter missing'}}}),
-    (auth.get_auth_token,   ['email','password'], {'response':{'refresh_token': 'valid-token'}}),
-    (auth.get_auth_token,   ['email','password'], {'response':{'expires_in': 1000}}),
-    (auth.get_auth_token,   ['email','password'], {'response':{'random_key': 'some-value'}}),
-    (auth.get_auth_token,   ['email','password'], {'response':'string-not-a-dictionary'}),
-    (auth.renew_auth_token, ['some-valid-token'], {'has_error':True,'errors':{'system':{'message':'Invalid grant_type parameter or parameter missing'}}}),
-    (auth.renew_auth_token, ['some-valid-token'], {'response':{'refresh_token': 'valid-token'}}),
-    (auth.renew_auth_token, ['some-valid-token'], {'response':{'expires_in': 1000}}),
-    (auth.renew_auth_token, ['some-valid-token'], {'response':{'random_key': 'some-value'}}),
-    (auth.renew_auth_token, ['some-valid-token'], {'response':'string-not-a-dictionary'}),
-])
-def test_auth_invalid_json(auth_fn: Callable, args, json: Dict):
+""" -------------------------------------- Test Mapping --------------------------------------- """
+#   To setup testcases for authentication, it must contain the following fields:
+#       fn:             The API generator function to test.
+#       invalid_json:   Text file containing bad responses that should produce an exception, each testcase separated by newline in JSON format.
+#       valid_json:     Text file containing good responses, each testcase separated by newline in JSON format.
+#       valid_args:     List of valid function arguments. Ensures that only the extraction is being tested.
+testcase_dir = os.path.dirname(__file__) + '/auth_testcases'
+auth_test_info = {
+    'get_auth_token': {
+        'fn': auth.get_auth_token,
+        'invalid_json': f'{testcase_dir}/get_auth_token_invalid.json',
+        'valid_json':   f'{testcase_dir}/get_auth_token_valid.json',
+        'valid_args':    ['email','password'],
+    },
+    'renew_auth_token': {
+        'fn': auth.renew_auth_token,
+        'invalid_json': f'{testcase_dir}/renew_auth_token_invalid.json',
+        'valid_json':   f'{testcase_dir}/renew_auth_token_valid.json',
+        'valid_args':    ['some-valid-token']
+    }
+}
+
+
+@pytest.mark.parametrize("auth_fn, args, invalid_json",
+    # Use list comprehension to load the testcases for each auth call from their associated file.
+    [
+    #   auth fn             list of valid api fn args   invalid json to test 
+        (test_info['fn'],   test_info['valid_args'],    json.loads(json_testcase))
+        for test_info in auth_test_info.values()
+        for json_testcase in open(test_info['invalid_json'], encoding='utf-8').readlines()
+    ]
+)
+def test_auth_invalid_json(auth_fn: Callable, args, invalid_json: Dict):
     """ Test cases for auth API calls when the model returns a JSON response that does not contain
     the keys required to extract the information of interest.
     
     Parameters:
         auth_fn: The authentication function to test.
         args: Some valid function arguments for the authentication function.
-        json: Invalid JSON response.
+        invalid_json: Invalid JSON response.
         
     """
     # Setup the mocked auth function with the returned json
     auth_func_patch = patch(f'pixivpy.auth.models.{auth_fn.__name__}')
     auth_func_mock = auth_func_patch.start()
-    auth_func_mock.return_value = json
+    auth_func_mock.return_value = invalid_json
 
     # Run with the mocked model function with returned invalid json
     with pytest.raises(InvalidJsonResponse) as e:
         auth_fn(*args) 
 
 
-@pytest.mark.parametrize("auth_fn, args, json", [
-    (auth.get_auth_token,   ['email','password'], {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}}),
-    (auth.renew_auth_token, ['some-valid-token'], {'response':{'refresh_token': 'valid-token', 'expires_in': 3600}})
-])
-def test_auth_valid_json(auth_fn: Callable, args, json: Dict):
+@pytest.mark.parametrize("auth_fn, args, valid_json",
+    # Use list comprehension to load the testcases for each auth call from their associated file.
+    [
+    #   auth fn             list of valid api fn args   valid json to test 
+        (test_info['fn'],   test_info['valid_args'],    json.loads(json_testcase))
+        for test_info in auth_test_info.values()
+        for json_testcase in open(test_info['valid_json'], encoding='utf-8').readlines()
+    ]
+)
+def test_auth_valid_json(auth_fn: Callable, args, valid_json: Dict):
     """ Test cases for auth API calls when the model returns a JSON response that contains the keys
     required to extract the information of interest.
     
     Parameters:
         auth_fn: The authentication function to test.
         args: Some valid function arguments for the authentication function.
-        json: Valid JSON response.
+        valid_json: Valid JSON response.
         
     """
     # Setup the mocked auth function with the returned json
     auth_func_patch = patch(f'pixivpy.auth.models.{auth_fn.__name__}')
     auth_func_mock = auth_func_patch.start()
-    auth_func_mock.return_value = json
+    auth_func_mock.return_value = valid_json
 
     # Run with the mocked model function with returned json
     token, ttl = auth_fn(*args) 
-    assert json['response']['refresh_token'] == token, 'Token did not match expected'
-    assert json['response']['expires_in'] == ttl, 'Token expiration time did not match expected'
+    assert valid_json['response']['refresh_token'] == token, 'Token did not match expected'
+    assert valid_json['response']['expires_in'] == ttl, 'Token expiration time did not match expected'

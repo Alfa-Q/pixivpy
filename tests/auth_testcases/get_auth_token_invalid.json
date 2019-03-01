@@ -1,0 +1,5 @@
+{"has_error":true,"errors":{"system":{"message":"Invalid grant_type parameter or parameter missing"}}}
+{"response":{"refresh_token": "valid-token"}}
+{"response":{"expires_in": 1000}}
+{"response":{"random_key": "some-value"}}
+{"response":"string-not-a-dictionary"}

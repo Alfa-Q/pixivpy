@@ -12,13 +12,13 @@ from pixivpy.common.exceptions import InvalidJsonResponse   # expected exception
 from pixivpy import api                                     # api functions that are being tested
 
 
-# Test case mapper
+""" -------------------------------------- Test Mapping --------------------------------------- """
 #   To setup testcases for an API generator function, it must contain the following fields:
 #       fn:             The API generator function to test.
 #       invalid_json:   Text file containing bad responses that should produce an exception, each testcase separated by newline in JSON format.
 #       valid_json:     Text file containing good responses, each testcase separated by newline in JSON format.
 #       valid_args:     List of valid function arguments. Ensures that only the extraction is being tested.
-#       list_key:       The key which contains the list of information to extract
+#       list_key:       The key in the JSON response which contains a list of information to be extracted.
 testcase_dir = os.path.dirname(__file__) + '/api_testcases'
 api_test_info = {
     'get_bookmarks': {
@@ -40,11 +40,19 @@ api_test_info = {
         'invalid_json': f'{testcase_dir}/get_illust_comments_invalid.json',
         'valid_json':   f'{testcase_dir}/get_illust_comments_valid.json',
         'valid_args':   ['12345',None,'some-valid-token'],
-        'list_key':     'comments' 
+        'list_key':     'comments'
+    },
+    'get_recommended': {
+        'fn': api.get_recommended,
+        'invalid_json': f'{testcase_dir}/get_recommended_invalid.json',
+        'valid_json':   f'{testcase_dir}/get_recommended_valid.json',
+        'valid_args':   ['for_android',True,True,'min-id','max-id',None,'some-valid-token'],
+        'list_key':     'illusts'
     }
 }
 
 
+""" --------------------------------------- Test Cases ---------------------------------------- """
 @pytest.mark.parametrize("api_gen_fn, args, invalid_json",
     # Use list comprehension to load the testcases for each API call from their associated file.
     [

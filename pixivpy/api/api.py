@@ -139,3 +139,40 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str) -> Generat
     )
     for data in generator:
         yield data
+
+
+def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_policy: bool, 
+                    min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
+                    offset: str, auth_token: str) -> Generator[List[Dict], None, None]:
+    """ Retrieves the recommended illustrations for a user.
+
+    Parameters:
+        filter: A filter option (i.e. 'for_android')
+        include_ranking_illusts: Whether or not the recommendations should include illusts 
+            that are currently in the different Pixiv rankings (weekly, rookie, daily, etc.)
+        include_privacy_policy:  Whether or not the privacy policy should be included (defaults to True).
+        min_bookmark_id_for_recent_illust:  Most recent illustration used for finding recommended 
+            bookmarks between some range of IDs and filtering ones that are similar (on server side).
+        max_bookmark_id_for_recommend:      Max bookmark ID for finding a recommendation.
+        offset: The offset from the start of a list containing all of the recommended illustrations.
+        auth_token: The auth bearer token.
+    
+    Returns: A chunk of JSON recommended illustrations based on the last on a range of bookmark IDs.
+    """
+    generator = _generator_api(
+        api_model = models.get_recommended,
+        kwargs = {
+            'filter': filter,
+            'include_ranking_illusts': include_ranking_illusts,
+            'include_privacy_policy':  include_privacy_policy,
+            'min_bookmark_id_for_recent_illust': min_bookmark_id_for_recent_illust,
+            'max_bookmark_id_for_recommend':     max_bookmark_id_for_recommend,
+            'offset': offset,
+            'auth_token': auth_token
+        },
+        valid_json = lambda json: 'illusts' in json.keys(),
+        param_keys = ['min_bookmark_id_for_recent_illust', 'max_bookmark_id_for_recommend', 'offset'],
+        transform_json = lambda json: [ illust for illust in json['illusts'] ]
+    )
+    for data in generator:
+        yield data

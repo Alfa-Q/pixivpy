@@ -80,3 +80,38 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str):
         },
         headers = { 'authorization': f'Bearer {auth_token}' }
     )
+
+
+
+@request(expected_code=200)
+def get_recommended(filter: str, include_ranking_illusts: str, include_privacy_policy: str, 
+                    min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
+                    offset: str, auth_token: str):
+    """ Retrieves the recommended illustrations for a user.
+
+    Parameters:
+        filter: A filter option (i.e. 'for_android')
+        include_ranking_illusts: Whether or not the recommendations should include illusts 
+            that are currently in the different Pixiv rankings (weekly, rookie, daily, etc.)
+        include_privacy_policy:  Whether or not the privacy policy should be included (defaults to True).
+        min_bookmark_id_for_recent_illust:  Most recent illustration used for finding recommended 
+            bookmarks between some range of IDs and filtering ones that are similar (on server side).
+        max_bookmark_id_for_recommend:      Max bookmark ID for finding a recommendation.
+        offset: The offset from the start of a list containing all of the recommended illustrations.
+        auth_token: The auth bearer token.
+    
+    Returns: A JSON response containing recommended illustrations.
+    """
+    return Request(
+        method = 'GET',
+        url = f'https://app-api.pixiv.net/v1/illust/recommended',
+        params = {
+            'filter': filter,
+            'include_ranking_illusts': include_ranking_illusts,
+            'include_privacy_policy':  include_privacy_policy,
+            'min_bookmark_id_for_recent_illust': min_bookmark_id_for_recent_illust,
+            'max_bookmark_id_for_recommend': max_bookmark_id_for_recommend,
+            'offset': offset
+        },
+        headers = { 'authorization': f'Bearer {auth_token}' }
+    )

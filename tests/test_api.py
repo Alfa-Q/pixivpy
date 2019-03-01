@@ -21,32 +21,32 @@ from pixivpy import api                                     # api functions that
 #       list_key:       The key in the JSON response which contains a list of information to be extracted.
 testcase_dir = os.path.dirname(__file__) + '/api_testcases'
 api_test_info = {
-    'get_bookmarks': {
-        'fn': api.get_bookmarks,
-        'invalid_json': f'{testcase_dir}/get_bookmarks_invalid.json',
-        'valid_json':   f'{testcase_dir}/get_bookmarks_valid.json',
-        'valid_args':   ['12345','public',None,'some-valid-token'],
-        'list_key':     'illusts'
-    },
     'get_bookmark_tags': {
         'fn': api.get_bookmark_tags,
         'invalid_json': f'{testcase_dir}/get_bookmark_tags_invalid.json',
         'valid_json':   f'{testcase_dir}/get_bookmark_tags_valid.json',
-        'valid_args':   ['12345','public',None,'some-valid-token'],
+        'valid_args':   ['some-valid-token','12345'],
         'list_key':     'bookmark_tags'
+    },
+    'get_bookmarks': {
+        'fn': api.get_bookmarks,
+        'invalid_json': f'{testcase_dir}/get_bookmarks_invalid.json',
+        'valid_json':   f'{testcase_dir}/get_bookmarks_valid.json',
+        'valid_args':   ['some-valid-token','12345'],
+        'list_key':     'illusts'
     },
     'get_illust_comments': {
         'fn': api.get_illust_comments,
         'invalid_json': f'{testcase_dir}/get_illust_comments_invalid.json',
         'valid_json':   f'{testcase_dir}/get_illust_comments_valid.json',
-        'valid_args':   ['12345',None,'some-valid-token'],
+        'valid_args':   ['some-valid-token','12345'],
         'list_key':     'comments'
     },
     'get_recommended': {
         'fn': api.get_recommended,
         'invalid_json': f'{testcase_dir}/get_recommended_invalid.json',
         'valid_json':   f'{testcase_dir}/get_recommended_valid.json',
-        'valid_args':   ['for_android',True,True,'min-id','max-id',None,'some-valid-token'],
+        'valid_args':   ['some-valid-token'],
         'list_key':     'illusts'
     },
     'get_articles': {

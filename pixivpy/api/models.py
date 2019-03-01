@@ -118,7 +118,7 @@ def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_
 
 
 @request(expected_code=200)
-def get_articles(filter: str, category: str, auth_token):
+def get_articles(filter: str, category: str, auth_token: str):
     """ Retrieves Pixiv articles from a particular category.
 
     Parameters:

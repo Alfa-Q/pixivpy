@@ -8,6 +8,7 @@ import urllib.parse as urlparse
 from . import models
 from typing import Generator, Dict, List, Callable, Any
 from pixivpy.common.exceptions import InvalidJsonResponse
+from pixivpy.common.data import AuthToken
 
 
 def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_json: Callable[[Dict], bool], param_keys: [str], transform_json: Callable[[Dict], Any]):
@@ -44,7 +45,9 @@ def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_j
             if json['next_url'] != None and json['next_url'] !="" and json['next_url'] != 'first_run':
                 parsed = urlparse.urlparse(json['next_url'])
                 for param_key in param_keys:
+                    print(parsed.query)
                     kwargs[param_key] = urlparse.parse_qs(parsed.query)[param_key][0]
+                    print(kwargs)  # DEBUG
             
             # Yield the transformed results (list of particular fields, etc.)
             yield transform_json(json)
@@ -54,7 +57,7 @@ def _generator_api(api_model: Callable[[List[Any]], Dict], kwargs: Dict, valid_j
         raise e
 
 
-def get_bookmark_tags(auth_token: str, user_id: str, restrict: str='public', offset: str=None):
+def get_bookmark_tags(auth_token: AuthToken, user_id: str, restrict: str='public', offset: str=None):
     """ Retrieves the bookmark tags for a specified user.
 
     Parameters:
@@ -83,7 +86,7 @@ def get_bookmark_tags(auth_token: str, user_id: str, restrict: str='public', off
         yield data
 
 
-def get_bookmarks(auth_token: str, user_id: str, restrict: str='public', tag: str=None) -> Generator[List[Dict], None, None]:
+def get_bookmarks(auth_token: AuthToken, user_id: str, restrict: str='public', tag: str=None) -> Generator[List[Dict], None, None]:
     """ Retrieves the bookmarks for a specified user.
 
     Parameters:
@@ -95,7 +98,7 @@ def get_bookmarks(auth_token: str, user_id: str, restrict: str='public', tag: st
     
     Returns: A chunk of JSON illustration information from a particular user's bookmarks.
     """
-    generator = _generator_api(
+    yield from _generator_api(
         api_model = models.get_bookmarks,
         kwargs = {
             'user_id': user_id, 
@@ -108,11 +111,9 @@ def get_bookmarks(auth_token: str, user_id: str, restrict: str='public', tag: st
         param_keys  = ['max_bookmark_id'],
         transform_json = lambda json: [ illust for illust in json['illusts'] ]
     )
-    for data in generator:
-        yield data
 
 
-def get_illust_comments(auth_token: str, illust_id: str, offset: str=None) -> Generator[List[Dict], None, None]:
+def get_illust_comments(auth_token: AuthToken, illust_id: str, offset: str=None) -> Generator[List[Dict], None, None]:
     """ Retrieves the comments for a specified user.
 
     Parameters:
@@ -139,7 +140,7 @@ def get_illust_comments(auth_token: str, illust_id: str, offset: str=None) -> Ge
         yield data
 
 
-def get_recommended(auth_token: str, filter: str='for_android', include_ranking_illusts: bool=True, 
+def get_recommended(auth_token: AuthToken, filter: str='for_android', include_ranking_illusts: bool=True, 
                     include_privacy_policy: bool=True, min_bookmark_id_for_recent_illust: str=None, 
                     max_bookmark_id_for_recommend: str=None, offset: str=None) -> Generator[List[Dict], None, None]:
     """ Retrieves the recommended illustrations for a user.
@@ -179,7 +180,7 @@ def get_recommended(auth_token: str, filter: str='for_android', include_ranking_
         yield data
 
 
-def get_articles(auth_token: str, filter: str='for_android', category: str='all'):
+def get_articles(auth_token: AuthToken, filter: str='for_android', category: str='all') -> Generator[List[Dict], None, None]:
     """ Retrieves Pixiv articles for a particular category.
 
     Parameters:
@@ -199,6 +200,31 @@ def get_articles(auth_token: str, filter: str='for_android', category: str='all'
         valid_json = lambda json: 'spotlight_articles' in json.keys(),
         param_keys = ['offset'],
         transform_json = lambda json: [ article for article in json['spotlight_articles'] ]
+    )
+    for data in generator:
+        yield data
+
+
+def get_related(auth_token: AuthToken, illust_id: str, filter: str='for_android') -> Generator[List[Dict], None, None]:
+    """ Retrieves illustrations related to the one provided.
+
+    Parameters:
+        auth_token: The auth bearer token.
+        illust_id: The illustration which is used to find similar illustrations.
+        filter: A filter option (i.e. 'for_android')
+
+    Returns: A JSON response containing related illustrations.
+    """
+    generator = _generator_api(
+        api_model = models.get_related,
+        kwargs = {
+            'filter': filter,
+            'illust_id': illust_id,
+            'auth_token': auth_token
+        },
+        valid_json = lambda json: 'illusts' in json.keys(),
+        param_keys = [f'seed_illust_ids[{i}]' for i in range(0,20) ],
+        transform_json = lambda json: [ illust for illust in json['illusts'] ]
     )
     for data in generator:
         yield data

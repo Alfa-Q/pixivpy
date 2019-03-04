@@ -9,6 +9,7 @@ import pytest                                               # testcase parametri
 from typing import Callable, Dict                           # typing support for function signature
 from unittest.mock import MagicMock, patch                  # mocking support
 from pixivpy.common.exceptions import InvalidJsonResponse   # expected exceptions
+from pixivpy.common.data import AuthToken                   # the authentication token used in the API calls
 from pixivpy import api                                     # api functions that are being tested
 
 
@@ -25,36 +26,43 @@ api_test_info = {
         'fn': api.get_bookmark_tags,
         'invalid_json': f'{testcase_dir}/get_bookmark_tags_invalid.json',
         'valid_json':   f'{testcase_dir}/get_bookmark_tags_valid.json',
-        'valid_args':   ['some-valid-token','12345'],
+        'valid_args':   [AuthToken('access','refresh',3600),'12345'],
         'list_key':     'bookmark_tags'
     },
     'get_bookmarks': {
         'fn': api.get_bookmarks,
         'invalid_json': f'{testcase_dir}/get_bookmarks_invalid.json',
         'valid_json':   f'{testcase_dir}/get_bookmarks_valid.json',
-        'valid_args':   ['some-valid-token','12345'],
+        'valid_args':   [AuthToken('access','refresh',3600),'12345'],
         'list_key':     'illusts'
     },
     'get_illust_comments': {
         'fn': api.get_illust_comments,
         'invalid_json': f'{testcase_dir}/get_illust_comments_invalid.json',
         'valid_json':   f'{testcase_dir}/get_illust_comments_valid.json',
-        'valid_args':   ['some-valid-token','12345'],
+        'valid_args':   [AuthToken('access','refresh',3600),'12345'],
         'list_key':     'comments'
     },
     'get_recommended': {
         'fn': api.get_recommended,
         'invalid_json': f'{testcase_dir}/get_recommended_invalid.json',
         'valid_json':   f'{testcase_dir}/get_recommended_valid.json',
-        'valid_args':   ['some-valid-token'],
+        'valid_args':   [AuthToken('access','refresh',3600)],
         'list_key':     'illusts'
     },
     'get_articles': {
         'fn': api.get_articles,
         'invalid_json': f'{testcase_dir}/get_articles_invalid.json',
         'valid_json':   f'{testcase_dir}/get_articles_valid.json',
-        'valid_args':   ['some-valid-token'],
+        'valid_args':   [AuthToken('access','refresh',3600)],
         'list_key':     'spotlight_articles'
+    },
+    'get_related': {
+        'fn': api.get_related,
+        'invalid_json': f'{testcase_dir}/get_related_invalid.json',
+        'valid_json':   f'{testcase_dir}/get_related_valid.json',
+        'valid_args':   [AuthToken('refresh','access',3600),'12345'],
+        'list_key':     'illusts'
     }
 }
 
@@ -130,7 +138,8 @@ def test_api_gen_valid_json(api_gen_fn: Callable, args, valid_json: Dict, repeat
 
     # Run with mocked model function with returned valid JSON
     counter = 0
-    for chunk in api_gen_fn(*args):
+    generator = api_gen_fn(*args)
+    for chunk in generator:
         if counter == repeat:
             assert None == chunk
         else:

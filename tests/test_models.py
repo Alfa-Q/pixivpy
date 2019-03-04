@@ -10,6 +10,7 @@ from unittest.mock import patch, MagicMock                  # mocking support
 from pixivpy.api  import models as apimodels                # api models to test
 from pixivpy.auth import models as authmodels               # authentication models to test
 from pixivpy.common.exceptions import InvalidStatusCode     # exceptions to catch
+from pixivpy.common.data import AuthToken                   # for testing auth token renewal
 
 
 """ -------------------------------------- Test Mapping --------------------------------------- """
@@ -22,43 +23,43 @@ model_test_info = {
     },
     'renew_auth_token': {
         'fn': authmodels.renew_auth_token,
-        'valid_args':    ['some-valid-token'], 
+        'valid_args':    [AuthToken('access','refresh',3600)], 
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
     },
     'get_bookmark_tags': {
         'fn': apimodels.get_bookmark_tags,
-        'valid_args':    ['12345','public',None,'some-valid-token'], 
+        'valid_args':    ['12345','public',None,AuthToken('access','refresh',3600)], 
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
     },
     'get_bookmarks': {
         'fn': apimodels.get_bookmarks,
-        'valid_args':    ['12345','public',None,None,'some-valid-token'],
+        'valid_args':    ['12345','public',None,None,AuthToken('access','refresh',3600)],
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
     },
     'get_illust_comments': {
         'fn': apimodels.get_illust_comments,
-        'valid_args':    ['12345',None,'some-valid-token'],
+        'valid_args':    ['12345',None,AuthToken('access','refresh',3600)],
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
     },
     'get_recommended': {
         'fn': apimodels.get_recommended,
-        'valid_args':    ['for_android',True,True,'min-id','max-id',None,'some-valid-token'],
+        'valid_args':    ['for_android',True,True,'min-id','max-id',None,AuthToken('refresh','access',3600)],
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
     },
     'get_articles': {
         'fn': apimodels.get_articles,
-        'valid_args':    ['for_android','all','some-valid-token'],
+        'valid_args':    ['for_android','all',AuthToken('access','refresh',3600)],
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
     },
     'get_related': {
         'fn': apimodels.get_related,
-        'valid_args':    ['for_android','12345','some-valid-token'],
+        'valid_args':    ['for_android','12345',AuthToken('access','refresh',3600)],
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
     }

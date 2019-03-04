@@ -6,6 +6,7 @@ Authentication request models for getting raw JSON response.
 
 from requests import Request
 from pixivpy.common.decors import request
+from pixivpy.common.data import AuthToken
 
 
 @request(expected_code=200)
@@ -39,7 +40,7 @@ def get_auth_token(username: str, password: str):
 
 
 @request(expected_code=200)
-def renew_auth_token(auth_token: str):
+def renew_auth_token(auth_token: AuthToken):
     """ Renews an auth bearer token for making API requests.
 
     Parameters:
@@ -59,7 +60,7 @@ def renew_auth_token(auth_token: str):
             'client_secret': 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj', 
             'device_token':  'pixiv',
             'grant_type': 'refresh_token',
-            'refresh_token': auth_token,
+            'refresh_token': auth_token.refresh_token,
             'get_secure_url': True,
             'include_policy': True
         }

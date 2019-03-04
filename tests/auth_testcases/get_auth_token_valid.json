@@ -1,1 +1,1 @@
-{"response":{"refresh_token": "valid-token", "expires_in": 3600}}
+{"response":{"access_token": "valid-token", "refresh_token": "valid-token", "expires_in": 3600}}

@@ -8,6 +8,7 @@ import os, pytest, json                                     # testcase parametri
 from typing import Callable, Dict                           # typing support for function signature
 from unittest.mock import patch, MagicMock                  # mocking support
 from pixivpy.common.exceptions import InvalidJsonResponse   # expected exceptions
+from pixivpy.common.data import AuthToken                   # auth token used to renew access token
 from pixivpy import auth                                    # auth functions that are being tested
 
 
@@ -29,7 +30,7 @@ auth_test_info = {
         'fn': auth.renew_auth_token,
         'invalid_json': f'{testcase_dir}/renew_auth_token_invalid.json',
         'valid_json':   f'{testcase_dir}/renew_auth_token_valid.json',
-        'valid_args':    ['some-valid-token']
+        'valid_args':    [AuthToken('access','refresh',3600)]
     }
 }
 
@@ -89,6 +90,7 @@ def test_auth_valid_json(auth_fn: Callable, args, valid_json: Dict):
     auth_func_mock.return_value = valid_json
 
     # Run with the mocked model function with returned json
-    token, ttl = auth_fn(*args) 
-    assert valid_json['response']['refresh_token'] == token, 'Token did not match expected'
-    assert valid_json['response']['expires_in'] == ttl, 'Token expiration time did not match expected'
+    auth_token = auth_fn(*args) 
+    assert valid_json['response']['access_token']  == auth_token.access_token,  'Access token did not match'
+    assert valid_json['response']['refresh_token'] == auth_token.refresh_token, 'Refresh token did not match expected'
+    assert valid_json['response']['expires_in'] == auth_token.ttl, 'Token expiration time did not match expected'

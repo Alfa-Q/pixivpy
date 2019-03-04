@@ -5,11 +5,12 @@ Pixiv application API request models for getting raw JSON response.
 """
 
 from requests import Request
+from pixivpy.common.data import AuthToken
 from pixivpy.common.decors import request
 
 
 @request(expected_code=200)
-def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str):
+def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: AuthToken):
     """ Retrieves the user's bookmark tags for the particular bookmark type (private or public).
 
     Parameters:
@@ -28,12 +29,12 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: str)
             'restrict': restrict,
             'offset': offset
         },
-        headers = { 'authorization': f'Bearer {auth_token}' }
+        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
     )
 
 
 @request(expected_code=200)
-def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, auth_token: str):
+def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, auth_token: AuthToken):
     """ Retrieves the bookmarks for a specified user.
 
     Parameters:
@@ -56,12 +57,12 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, a
             'max_bookmark_id': max_bookmark_id,
             'tag':  tag
         },
-        headers = { 'authorization': f'Bearer {auth_token}' }
+        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
     )
 
 
 @request(expected_code=200)
-def get_illust_comments(illust_id: str, offset: str, auth_token: str):
+def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken):
     """ Retrieves the comments on an illustration.
 
     Parameters:
@@ -78,7 +79,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str):
             'illust_id': illust_id,
             'offset': offset
         },
-        headers = { 'authorization': f'Bearer {auth_token}' }
+        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
     )
 
 
@@ -86,7 +87,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: str):
 @request(expected_code=200)
 def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_policy: bool, 
                     min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
-                    offset: str, auth_token: str):
+                    offset: str, auth_token: AuthToken):
     """ Retrieves the recommended illustrations for a user.
 
     Parameters:
@@ -113,12 +114,12 @@ def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_
             'max_bookmark_id_for_recommend': max_bookmark_id_for_recommend,
             'offset': offset
         },
-        headers = { 'authorization': f'Bearer {auth_token}' }
+        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
     )
 
 
 @request(expected_code=200)
-def get_articles(filter: str, category: str, auth_token: str):
+def get_articles(filter: str, category: str, auth_token: AuthToken):
     """ Retrieves Pixiv articles from a particular category.
 
     Parameters:
@@ -135,12 +136,12 @@ def get_articles(filter: str, category: str, auth_token: str):
             'filter': filter,
             'category': category
         },
-        headers = { 'authorization': f'Bearer {auth_token}' }
+        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
     )
 
 
 @request(expected_code=200)
-def get_related(filter: str, illust_id: str, auth_token: str):
+def get_related(filter: str, illust_id: str, auth_token: AuthToken):
     """ Retrieves illustrations related to the one provided.
 
     Parameters:
@@ -155,7 +156,7 @@ def get_related(filter: str, illust_id: str, auth_token: str):
         url = f'https://app-api.pixiv.net/v2/illust/related',
         params = {
             'filter': filter,
-            'illust_id': illust_id
+            'illust_id': illust_id,
         },
-        headers = { 'authorization': f'Bearer {auth_token}' }
+        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
     )

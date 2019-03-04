@@ -9,5 +9,6 @@ from .api import (
     get_bookmark_tags,
     get_illust_comments,
     get_recommended,
-    get_articles
+    get_articles,
+    get_related
 )

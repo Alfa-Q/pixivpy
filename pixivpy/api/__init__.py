@@ -10,5 +10,6 @@ from .api import (
     get_illust_comments,
     get_recommended,
     get_articles,
-    get_related
+    get_related,
+    get_rankings
 )

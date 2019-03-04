@@ -1,7 +1,8 @@
 """
 pixivpy.api.api
 --------------------
-Layer above the models module for extracting particular data from the JSON response.
+Layer above the models module for extracting particular data from the JSON response 
+(i.e. a list of JSON data containing information of interest).
 """
 
 import urllib.parse as urlparse
@@ -223,7 +224,34 @@ def get_related(auth_token: AuthToken, illust_id: str, filter: str='for_android'
             'auth_token': auth_token
         },
         valid_json = lambda json: 'illusts' in json.keys(),
-        param_keys = [f'seed_illust_ids[{i}]' for i in range(0,20) ],
+        param_keys = [ f'seed_illust_ids[{i}]' for i in range(0,20) ],
+        transform_json = lambda json: [ illust for illust in json['illusts'] ]
+    )
+    for data in generator:
+        yield data
+
+
+def get_rankings(auth_token: AuthToken, filter: str='for_android', mode: str='day', offset: str=None) -> Generator[List[Dict], None, None]:
+    """ Retrieves the top ranked illustrations for some mode.
+
+    Parameters:
+        auth_token: The auth bearer token.
+        filter: A filter option (i.e. 'for_android')
+        mode: Type of ranking (i.e. 'day', 'day_male', 'week', 'month', ...)  #TODO Create enums for modes and filters!!!
+        offset: The offset from the start of a list containing all of the ranked illustrations for the mode + filter.
+
+    Returns: A JSON response containing the ranked illustrations for the specified mode.
+    """
+    generator = _generator_api(
+        api_model = models.get_rankings,
+        kwargs = {
+            'filter': filter,
+            'mode': mode,
+            'offset': offset,
+            'auth_token': auth_token
+        },
+        valid_json = lambda json: 'illusts' in json.keys(),
+        param_keys = ['mode', 'offset', 'filter'],
         transform_json = lambda json: [ illust for illust in json['illusts'] ]
     )
     for data in generator:

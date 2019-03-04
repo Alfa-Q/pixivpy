@@ -170,6 +170,7 @@ def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken):
         filter: A filter option (i.e. 'for_android')
         mode: Type of ranking (i.e. 'day', 'day_male', 'week', 'month', ...)  #TODO Create enums for modes and filters!!!
         offset: The offset from the start of a list containing all of the ranked illustrations for the mode + filter.
+        auth_token: The auth bearer token.
 
     Returns: A JSON response containing the ranked illustrations for the specified mode.
     """

@@ -61,7 +61,14 @@ api_test_info = {
         'fn': api.get_related,
         'invalid_json': f'{testcase_dir}/get_related_invalid.json',
         'valid_json':   f'{testcase_dir}/get_related_valid.json',
-        'valid_args':   [AuthToken('refresh','access',3600),'12345'],
+        'valid_args':   [AuthToken('access','access',3600),'12345'],
+        'list_key':     'illusts'
+    },
+    'get_rankings': {
+        'fn': api.get_rankings,
+        'invalid_json': f'{testcase_dir}/get_rankings_invalid.json',
+        'valid_json':   f'{testcase_dir}/get_rankings_valid.json',
+        'valid_args':   [AuthToken('access','refresh',3600)],
         'list_key':     'illusts'
     }
 }

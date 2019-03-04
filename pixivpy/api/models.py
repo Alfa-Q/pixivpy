@@ -153,10 +153,33 @@ def get_related(filter: str, illust_id: str, auth_token: AuthToken):
     """
     return Request(
         method = 'GET',
-        url = f'https://app-api.pixiv.net/v2/illust/related',
+        url = 'https://app-api.pixiv.net/v2/illust/related',
         params = {
             'filter': filter,
             'illust_id': illust_id,
+        },
+        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+    )
+
+
+@request(expected_code=200)
+def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken):
+    """ Retrieves the top ranked illustrations for some mode.
+
+    Parameters:
+        filter: A filter option (i.e. 'for_android')
+        mode: Type of ranking (i.e. 'day', 'day_male', 'week', 'month', ...)  #TODO Create enums for modes and filters!!!
+        offset: The offset from the start of a list containing all of the ranked illustrations for the mode + filter.
+
+    Returns: A JSON response containing the ranked illustrations for the specified mode.
+    """
+    return Request(
+        method = 'GET',
+        url = 'https://app-api.pixiv.net/v1/illust/ranking',
+        params = {
+            'filter': filter,
+            'mode': mode,
+            'offset': offset
         },
         headers = { 'authorization': f'Bearer {auth_token.access_token}' }
     )

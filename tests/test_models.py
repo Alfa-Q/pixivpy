@@ -62,6 +62,12 @@ model_test_info = {
         'valid_args':    ['for_android','12345',AuthToken('access','refresh',3600)],
         'valid_codes':   [200],
         'invalid_codes': [-200,302,400,403,404]
+    },
+    'get_rankings': {
+        'fn': apimodels.get_rankings,
+        'valid_args':    ['for_android','day',None,AuthToken('access','refresh',3600)],
+        'valid_codes':   [200],
+        'invalid_codes': [-200,302,400,403,404]
     }
 }
 

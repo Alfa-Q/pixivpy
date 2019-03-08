@@ -32,7 +32,7 @@ from pixivpy.common.data import AuthToken
 
 #TODO: Remove transform JSON and valid_json arguments
 def _generator_api(
-        api_model: Callable[List[Any], Dict[str, Any]],
+        api_model: Callable[[Any], Dict[str, Any]],
         kwargs: Dict[str, Any],
         valid_json: Callable[[Dict[str, Any]], bool],
         param_keys: List[str],

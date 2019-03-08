@@ -60,7 +60,7 @@ _AUTH_TEST_INFO = {
         for json_testcase in open(test_info['invalid_json'], encoding='utf-8').readlines()
     ]
 )
-def test_auth_invalid_json(auth_fn: Callable, args: [Any], invalid_json: Dict[Any: Any]):
+def test_auth_invalid_json(auth_fn: Callable, args: Any, invalid_json: Dict[Any, Any]):
     """Test auth calls when the the JSON response is invalid.
 
     Ensures that the auth call raises an InvalidJsonResponse exception is thrown when the JSON
@@ -91,7 +91,7 @@ def test_auth_invalid_json(auth_fn: Callable, args: [Any], invalid_json: Dict[An
         for json_testcase in open(test_info['valid_json'], encoding='utf-8').readlines()
     ]
 )
-def test_auth_valid_json(auth_fn: Callable, args: [Any], valid_json: Dict[Any: Any]):
+def test_auth_valid_json(auth_fn: Callable, args: Any, valid_json: Dict[str, Any]):
     """Test auth calls when the JSON response is valid.
 
     Ensures that the auth call is able to extract information from the JSON to create an AuthToken

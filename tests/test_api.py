@@ -96,7 +96,7 @@ _API_TEST_INFO = {
         for json_testcase in open(test_info['invalid_json'], encoding='utf-8').readlines()
     ]
 )
-def test_api_gen_invalid_json(api_gen_fn: Callable, args: [Any], invalid_json: Dict[Any, Any]):
+def test_api_gen_invalid_json(api_gen_fn: Callable, args: Any, invalid_json: Dict[Any, Any]):
     """Test API generator fn when the JSON response is invalid.
 
     Ensures that the API generator function raises an Exception when the the JSON received from the
@@ -135,8 +135,8 @@ def test_api_gen_invalid_json(api_gen_fn: Callable, args: [Any], invalid_json: D
     ]
 )
 @pytest.mark.parametrize("repeat", range(1, 5))
-def test_api_gen_valid_json(api_gen_fn: Callable, args, valid_json: Dict[str, Any], repeat: int,
-                            stop_json: Dict):
+def test_api_gen_valid_json(api_gen_fn: Callable, args: Any, valid_json: Dict[str, Any],
+                            repeat: int, stop_json: Dict[str, Any]):
     """Test API generator fn when the JSON response is valid.
 
     Ensures that the API generator function raises an Exception when the the JSON received from the

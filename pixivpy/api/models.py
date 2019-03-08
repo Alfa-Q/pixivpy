@@ -1,7 +1,8 @@
-"""
-pixivpy.api.models
---------------------
-Pixiv application API request models for getting raw JSON response.
+"""Pixiv API request models.
+
+Pixiv application API request models for getting raw JSON responses.
+Each function returns a Request object which defines the Pixiv app API call which is then executed
+by the 'request' wrapper, converted into JSON, and returned to the callee.
 """
 
 from requests import Request
@@ -11,176 +12,209 @@ from pixivpy.common.decors import request
 
 @request(expected_code=200)
 def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: AuthToken):
-    """ Retrieves the user's bookmark tags for the particular bookmark type (private or public).
+    """Retrieve the user's bookmark tags for the particular bookmark type.
 
-    Parameters:
-        user_id: The Pixiv user ID.
-        restrict: Work restrictions, specifying either 'public' or 'private.'
-        offset: The offset from the start of the list of a user's bookmark tag list.
-        auth_token: The auth bearer token.
-    
-    Returns: A JSON response containing the user's bookmark tags (public or private).
+    Args:
+        user_id: Pixiv user ID.
+        restrict: Work restriction option.
+        offset: Optional parameter specifying the offset into a user's complete list of bookmark
+            tags.
+        auth_token: OAuth bearer token.
+
+    Returns:
+        A JSON response containing the user's bookmark tags.
+
     """
     return Request(
-        method = 'GET',
-        url = 'https://app-api.pixiv.net/v1/user/bookmark-tags/illust',
-        params = { 
-            'user_id': user_id, 
+        method='GET',
+        url='https://app-api.pixiv.net/v1/user/bookmark-tags/illust',
+        params={
+            'user_id': user_id,
             'restrict': restrict,
             'offset': offset
         },
-        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+        headers={
+            'authorization': f'Bearer {auth_token.access_token}'
+        }
     )
 
 
 @request(expected_code=200)
-def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str, auth_token: AuthToken):
-    """ Retrieves the bookmarks for a specified user.
+def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
+                  auth_token: AuthToken):
+    """Retrieve the bookmarks for a specified user.
 
-    Parameters:
-        user_id: The Pixiv user ID.
-        restrict: Work restrictions, either 'public' or 'private.'
-        max_bookmark_id: Optional parameter specifying the ending point of the bookmarks to retrieve.
-            If left empty, only one chunk of bookmarks is retrieved, starting from the beginning of 
-            the most recent bookmarks for that user.
-        tag: A bookmark tag that is in the user's tag options, dependent on the restrict mode.
-        auth_token: The auth bearer token.
-    
-    Returns: A JSON response containing illustrations from a particular users bookmarks.
+    Args:
+        user_id: Pixiv user ID.
+        restrict: Work restriction option.
+        max_bookmark_id: Optional parameter specifying the end point of the bookmarks to retrieve.
+        tag: Optional parameter that specifies a bookmark tag that is in the user's tag options,
+            dependent on the restrict option.
+        auth_token: OAuth bearer token.
+
+    Returns:
+        A JSON response containing illustrations from a particular users bookmarks.
+
     """
     return Request(
-        method = 'GET',
-        url = 'https://app-api.pixiv.net/v1/user/bookmarks/illust',
-        params = { 
-            'user_id': user_id, 
+        method='GET',
+        url='https://app-api.pixiv.net/v1/user/bookmarks/illust',
+        params={
+            'user_id': user_id,
             'restrict': restrict,
             'max_bookmark_id': max_bookmark_id,
             'tag':  tag
         },
-        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+        headers={
+            'authorization': f'Bearer {auth_token.access_token}'
+        }
     )
 
 
 @request(expected_code=200)
 def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken):
-    """ Retrieves the comments on an illustration.
+    """Retrieve the comments on a specified illustration.
 
-    Parameters:
-        illust_id:  The illustration ID.
-        offset: The offset from the start of a list containing all of the illustration comments.
-        auth_token: The auth bearer token.
-    
-    Returns: A JSON response containing comments from a particular illustration.
+    Args:
+        illust_id: Pixiv illustration ID.
+        offset: Optional parameter specifying the offset into an illustration's complete list of
+            comments.
+        auth_token: OAuth bearer token.
+
+    Returns:
+        A JSON response containing comments from a particular illustration.
+
     """
     return Request(
-        method = 'GET',
-        url = 'https://app-api.pixiv.net/v2/illust/comments',
-        params = {
+        method='GET',
+        url='https://app-api.pixiv.net/v2/illust/comments',
+        params={
             'illust_id': illust_id,
             'offset': offset
         },
-        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+        headers={
+            'authorization': f'Bearer {auth_token.access_token}'
+        }
     )
 
 
 
 @request(expected_code=200)
-def get_recommended(filter: str, include_ranking_illusts: bool, include_privacy_policy: bool, 
+def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
                     min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
                     offset: str, auth_token: AuthToken):
-    """ Retrieves the recommended illustrations for a user.
+    """Retrieve the recommended illustrations for a user.
 
-    Parameters:
-        filter: A filter option (i.e. 'for_android')
-        include_ranking_illusts: Whether or not the recommendations should include illusts 
-            that are currently in the different Pixiv rankings (weekly, rookie, daily, etc.)
-        include_privacy_policy:  Whether or not the privacy policy should be included (defaults to True).
-        min_bookmark_id_for_recent_illust:  Most recent bookmark used for finding recommended 
-            bookmarks between some range of IDs and filtering ones that are similar (on server side).
-        max_bookmark_id_for_recommend:      Max bookmark ID for finding a recommendation.
-        offset: The offset from the start of a list containing all of the recommended illustrations.
-        auth_token: The auth bearer token.
-    
-    Returns: A JSON response containing recommended illustrations.
+    The recommendation is based on a the bookmark with the smallest ID within a list containing
+    some amount of the user's most recent bookmarks. It then looks for similar bookmarks between
+    this min ID bookmark and some maximum bookmark ID. Both of these values are retrieved encoded
+    in the query of the 'next_url' URL value.
+
+    Args:
+        filter: A filterable option.
+        include_ranked: Recommended should include illusts that are in the ranked list (i.e. daily)
+        include_privacy: Whether or not the privacy policy should be included.
+        min_bookmark_id_for_recent_illust: Bookmark ID used for finding recommended bookmarks.
+        max_bookmark_id_for_recommend: Max bookmark ID for finding a recommendation.
+        offset: Offset from the start of a list containing all of the recommended illustrations.
+        auth_token: OAuth bearer token.
+
+    Returns:
+        A JSON response containing recommended illustrations.
+
     """
     return Request(
-        method = 'GET',
-        url = 'https://app-api.pixiv.net/v1/illust/recommended',
-        params = {
+        method='GET',
+        url='https://app-api.pixiv.net/v1/illust/recommended',
+        params={
             'filter': filter,
-            'include_ranking_illusts': include_ranking_illusts,
-            'include_privacy_policy':  include_privacy_policy,
+            'include_ranking_illusts': include_ranked,
+            'include_privacy_policy':  include_privacy,
             'min_bookmark_id_for_recent_illust': min_bookmark_id_for_recent_illust,
             'max_bookmark_id_for_recommend': max_bookmark_id_for_recommend,
             'offset': offset
         },
-        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+        headers={
+            'authorization': f'Bearer {auth_token.access_token}'
+        }
     )
 
 
 @request(expected_code=200)
 def get_articles(filter: str, category: str, auth_token: AuthToken):
-    """ Retrieves Pixiv articles from a particular category.
+    """Retrieve Pixiv articles from a particular category.
 
-    Parameters:
-        filter: A filter option (i.e. 'for_android')
-        category: The article category to retrieve from (i.e. 'spotlight')
-        auth_token: The auth bearer token.
+    Args:
+        filter: A filter option.
+        category: The article category to retrieve from.
+        auth_token: OAuth bearer token.
 
-    Returns: A JSON response containing articles for the particular category.
+    Returns:
+        A JSON response containing articles for the particular category.
+
     """
     return Request(
-        method = 'GET',
-        url = 'https://app-api.pixiv.net/v1/spotlight/articles',
-        params = {
+        method='GET',
+        url='https://app-api.pixiv.net/v1/spotlight/articles',
+        params={
             'filter': filter,
             'category': category
         },
-        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+        headers={
+            'authorization': f'Bearer {auth_token.access_token}'
+        }
     )
 
 
 @request(expected_code=200)
 def get_related(filter: str, illust_id: str, auth_token: AuthToken):
-    """ Retrieves illustrations related to the one provided.
+    """Retrieve illustrations related to the one provided.
 
-    Parameters:
-        filter: A filter option (i.e. 'for_android')
-        illust_id: The illustration which is used to find similar illustrations.
-        auth_token: The auth bearer token.
+    Args:
+        filter: A filter option.
+        illust_id: The illustration that is used to find other similar illustrations.
+        auth_token: OAuth bearer token.
 
-    Returns: A JSON response containing related illustrations.
+    Returns:
+        A JSON response containing related illustrations.
+
     """
     return Request(
-        method = 'GET',
-        url = 'https://app-api.pixiv.net/v2/illust/related',
-        params = {
+        method='GET',
+        url='https://app-api.pixiv.net/v2/illust/related',
+        params={
             'filter': filter,
             'illust_id': illust_id,
         },
-        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+        headers={
+            'authorization': f'Bearer {auth_token.access_token}'
+        }
     )
 
 
 @request(expected_code=200)
 def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken):
-    """ Retrieves the top ranked illustrations for some mode.
+    """Retrieve the top ranked illustrations for some mode.
 
-    Parameters:
-        filter: A filter option (i.e. 'for_android')
-        mode: Type of ranking (i.e. 'day', 'day_male', 'week', 'month', ...)  #TODO Create enums for modes and filters!!!
-        offset: The offset from the start of a list containing all of the ranked illustrations for the mode + filter.
-        auth_token: The auth bearer token.
+    Args:
+        filter: A filter option.
+        mode: Type of ranking.
+        offset: Offset from the start of a list containing all of the filtered ranked illustrations
+        auth_token: OAuth bearer token.
 
-    Returns: A JSON response containing the ranked illustrations for the specified mode.
+    Returns:
+        A JSON response containing the ranked illustrations for the specified mode.
+
     """
     return Request(
-        method = 'GET',
-        url = 'https://app-api.pixiv.net/v1/illust/ranking',
-        params = {
+        method='GET',
+        url='https://app-api.pixiv.net/v1/illust/ranking',
+        params={
             'filter': filter,
             'mode': mode,
             'offset': offset
         },
-        headers = { 'authorization': f'Bearer {auth_token.access_token}' }
+        headers={
+            'authorization': f'Bearer {auth_token.access_token}'
+        }
     )

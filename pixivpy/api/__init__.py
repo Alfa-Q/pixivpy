@@ -1,8 +1,4 @@
-"""
-pixivpy.api.__init__
-----------------------
-pixivpy api package initialization.
-"""
+"""pixivpy API package initialization."""
 
 from .api import (
     get_bookmarks,
@@ -12,4 +8,11 @@ from .api import (
     get_articles,
     get_related,
     get_rankings
+)
+
+from .data import (
+    RESTRICT,
+    FILTER,
+    ARTICLE_CATEGORY,
+    RANK_MODE
 )

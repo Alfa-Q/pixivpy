@@ -1,19 +1,8 @@
-"""
-pixivpy.common.exceptions
--------------------------
-pixivpy common exception classes.
-"""
+"""pixivpy common exception classes."""
 
 class InvalidStatusCode(Exception):
-    """
-    Exception which indicates that the status code returned by the request call did not match the
-    expected value.
-    """
-    pass
+    """Indicates that the status code in the response did not match the expected code."""
 
 
 class InvalidJsonResponse(Exception):
-    """
-    Exception which indicates that the JSON response received by the request call was invalid.
-    """
-    pass
+    """Indicates that the JSON response received by the request call was invalid."""

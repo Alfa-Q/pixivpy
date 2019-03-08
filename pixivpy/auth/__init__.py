@@ -1,8 +1,4 @@
-"""
-pixivpy.auth.__init__
-----------------------
-pixivpy auth package initialization.
-"""
+"""pixivpy Authentication package initialization."""
 
 from .auth import (
     get_auth_token,

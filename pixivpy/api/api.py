@@ -17,7 +17,7 @@ Example of an API Function Usage:
 """
 
 import urllib.parse as urlparse
-from typing import Iterator, Dict, List, Callable, Any
+from typing import Optional, Iterator, Dict, List, Callable, Any
 
 from pixivpy.api import models
 from pixivpy.api.data import (
@@ -31,9 +31,13 @@ from pixivpy.common.data import AuthToken
 
 
 #TODO: Remove transform JSON and valid_json arguments
-def _generator_api(api_model: Callable[[Any], Dict], kwargs: Dict,
-                   valid_json: Callable[[Dict], bool], param_keys: [str],
-                   transform_json) -> Iterator[List[Dict]]:
+def _generator_api(
+        api_model: Callable[List[Any], Dict[str, Any]],
+        kwargs: Dict[str, Any],
+        valid_json: Callable[[Dict[str, Any]], bool],
+        param_keys: List[str],
+        transform_json
+    ) -> Iterator[List[Dict[str, Any]]]:
     """AI helper generator function for repeatedly retrieving data via API calls.
 
     All Pixiv API responses contain a JSON key called "next_url" which is used to retrieve the
@@ -92,8 +96,12 @@ def _generator_api(api_model: Callable[[Any], Dict], kwargs: Dict,
         raise e
 
 
-def get_bookmark_tags(auth_token: AuthToken, user_id: str, restrict: str = RESTRICT.PUBLIC,
-                      offset: str = None) -> Iterator[List[Dict]]:
+def get_bookmark_tags(
+        auth_token: AuthToken,
+        user_id: str,
+        restrict: str = RESTRICT.PUBLIC,
+        offset: Optional[str] = None
+    ) -> Iterator[List[Dict[str, Any]]]:
     """Retrieve the bookmark tags for a specified user.
 
     Args:
@@ -127,8 +135,12 @@ def get_bookmark_tags(auth_token: AuthToken, user_id: str, restrict: str = RESTR
         yield data
 
 
-def get_bookmarks(auth_token: AuthToken, user_id: str, restrict: str = RESTRICT.PUBLIC,
-                  tag: str = None) -> Iterator[List[Dict]]:
+def get_bookmarks(
+        auth_token: AuthToken,
+        user_id: str,
+        restrict: str = RESTRICT.PUBLIC,
+        tag: Optional[str] = None
+    ) -> Iterator[List[Dict[str, Any]]]:
     """Retrieve the bookmarks for a specified user.
 
     Args:
@@ -172,8 +184,11 @@ def get_bookmarks(auth_token: AuthToken, user_id: str, restrict: str = RESTRICT.
         yield data
 
 
-def get_illust_comments(auth_token: AuthToken, illust_id: str,
-                        offset: str = None) -> Iterator[List[Dict]]:
+def get_illust_comments(
+        auth_token: AuthToken,
+        illust_id: str,
+        offset: Optional[str] = None
+    ) -> Iterator[List[Dict[str, Any]]]:
     """Retrieve the comments on a specified illustration.
 
     Args:
@@ -201,9 +216,13 @@ def get_illust_comments(auth_token: AuthToken, illust_id: str,
         yield data
 
 
-def get_recommended(auth_token: AuthToken, filter: str = FILTER.FOR_ANDROID,
-                    include_ranking_illusts: bool = True, include_privacy_policy: bool = True,
-                    offset: str = None) -> Iterator[List[Dict]]:
+def get_recommended(
+        auth_token: AuthToken,
+        filter: str = FILTER.FOR_ANDROID,
+        include_ranking_illusts: bool = True,
+        include_privacy_policy: bool = True,
+        offset: Optional[str] = None
+    ) -> Iterator[List[Dict[str, Any]]]:
     """Retrieve the recommended illustrations for a user.
 
     Args:
@@ -248,8 +267,11 @@ def get_recommended(auth_token: AuthToken, filter: str = FILTER.FOR_ANDROID,
         yield data
 
 
-def get_articles(auth_token: AuthToken, filter: str = FILTER.FOR_ANDROID,
-                 category: str = ARTICLE_CATEGORY.ALL) -> Iterator[List[Dict]]:
+def get_articles(
+        auth_token: AuthToken,
+        filter: str = FILTER.FOR_ANDROID,
+        category: str = ARTICLE_CATEGORY.ALL
+    ) -> Iterator[List[Dict[str, Any]]]:
     """Retrieve Pixiv articles for a particular category.
 
     Args:
@@ -276,8 +298,11 @@ def get_articles(auth_token: AuthToken, filter: str = FILTER.FOR_ANDROID,
         yield data
 
 
-def get_related(auth_token: AuthToken, illust_id: str,
-                filter: str = FILTER.FOR_ANDROID) -> Iterator[List[Dict]]:
+def get_related(
+        auth_token: AuthToken,
+        illust_id: str,
+        filter: str = FILTER.FOR_ANDROID
+    ) -> Iterator[List[Dict[str, Any]]]:
     """Retrieve illustrations related to the one provided.
 
     Args:
@@ -305,8 +330,12 @@ def get_related(auth_token: AuthToken, illust_id: str,
         yield data
 
 
-def get_rankings(auth_token: AuthToken, filter: str = FILTER.FOR_ANDROID,
-                 mode: str = RANK_MODE.DAY, offset: str = None) -> Iterator[List[Dict]]:
+def get_rankings(
+        auth_token: AuthToken,
+        filter: str = FILTER.FOR_ANDROID,
+        mode: str = RANK_MODE.DAY,
+        offset: Optional[str] = None
+    ) -> Iterator[List[Dict[str, Any]]]:
     """Retrieve the top ranked illustrations for some mode.
 
     Args:

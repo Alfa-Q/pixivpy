@@ -5,6 +5,8 @@ Each function returns a Request object which defines the Pixiv app API call whic
 by the 'request' wrapper, converted into JSON, and returned to the callee.
 """
 
+from typing import Dict, Any
+
 from requests import Request
 
 from pixivpy.common.data import AuthToken
@@ -12,7 +14,8 @@ from pixivpy.common.decors import request
 
 
 @request(expected_code=200)
-def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: AuthToken):
+def get_bookmark_tags(user_id: str, restrict: str, offset: str,
+                      auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the user's bookmark tags for the particular bookmark type.
 
     Args:
@@ -42,7 +45,7 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str, auth_token: Auth
 
 @request(expected_code=200)
 def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
-                  auth_token: AuthToken):
+                  auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the bookmarks for a specified user.
 
     Args:
@@ -73,7 +76,7 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
 
 
 @request(expected_code=200)
-def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken):
+def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the comments on a specified illustration.
 
     Args:
@@ -99,11 +102,10 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken):
     )
 
 
-
 @request(expected_code=200)
 def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
                     min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
-                    offset: str, auth_token: AuthToken):
+                    offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the recommended illustrations for a user.
 
     The recommendation is based on a the bookmark with the smallest ID within a list containing
@@ -142,7 +144,7 @@ def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
 
 
 @request(expected_code=200)
-def get_articles(filter: str, category: str, auth_token: AuthToken):
+def get_articles(filter: str, category: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve Pixiv articles from a particular category.
 
     Args:
@@ -168,7 +170,7 @@ def get_articles(filter: str, category: str, auth_token: AuthToken):
 
 
 @request(expected_code=200)
-def get_related(filter: str, illust_id: str, auth_token: AuthToken):
+def get_related(filter: str, illust_id: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve illustrations related to the one provided.
 
     Args:
@@ -194,7 +196,7 @@ def get_related(filter: str, illust_id: str, auth_token: AuthToken):
 
 
 @request(expected_code=200)
-def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken):
+def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the top ranked illustrations for some mode.
 
     Args:

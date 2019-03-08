@@ -6,6 +6,7 @@ by the 'request' wrapper, converted into JSON, and returned to the callee.
 """
 
 from requests import Request
+
 from pixivpy.common.data import AuthToken
 from pixivpy.common.decors import request
 

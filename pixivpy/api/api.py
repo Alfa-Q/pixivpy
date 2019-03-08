@@ -18,6 +18,7 @@ Example of an API Function Usage:
 
 import urllib.parse as urlparse
 from typing import Iterator, Dict, List, Callable, Any
+
 from pixivpy.api import models
 from pixivpy.api.data import (
     RESTRICT,

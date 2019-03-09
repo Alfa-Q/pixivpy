@@ -117,7 +117,7 @@ def test_api_gen_invalid_json(api_gen_fn: Callable, args: Any, invalid_json: Dic
     # Run with the mocked model function with returned invalid JSON
     counter = 0
     with pytest.raises(InvalidJsonResponse):
-        for chunk in api_gen_fn(*args):
+        for _ in api_gen_fn(*args):
             counter += 1
             if counter == 2:
                 break

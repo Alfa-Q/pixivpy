@@ -44,7 +44,7 @@ _AUTH_TEST_INFO = {
     },
     'renew_auth_token': {
         'fn': auth.renew_auth_token,
-        'valid_args':    [AuthToken('access', 'refresh', 3600)],
+        'valid_args':    [AuthToken('access', 'refresh', 0)],
         'valid_json':   f'{_TESTCASE_DIR}/renew_auth_token_valid.json',
         'invalid_json': f'{_TESTCASE_DIR}/renew_auth_token_invalid.json'
     }

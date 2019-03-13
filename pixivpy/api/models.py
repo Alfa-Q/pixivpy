@@ -9,6 +9,7 @@ from typing import Dict, Any
 
 from requests import Request
 
+from pixivpy.auth import renew_auth_token
 from pixivpy.common.data import AuthToken
 from pixivpy.common.decors import request
 
@@ -29,6 +30,7 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str,
         A JSON response containing the user's bookmark tags.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/user/bookmark-tags/illust',
@@ -60,6 +62,7 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
         A JSON response containing illustrations from a particular users bookmarks.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/user/bookmarks/illust',
@@ -89,6 +92,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> D
         A JSON response containing comments from a particular illustration.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v2/illust/comments',
@@ -126,6 +130,7 @@ def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
         A JSON response containing recommended illustrations.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/illust/recommended',
@@ -156,6 +161,7 @@ def get_articles(filter: str, category: str, auth_token: AuthToken) -> Dict[str,
         A JSON response containing articles for the particular category.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/spotlight/articles',
@@ -182,6 +188,7 @@ def get_related(filter: str, illust_id: str, auth_token: AuthToken) -> Dict[str,
         A JSON response containing related illustrations.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v2/illust/related',
@@ -209,6 +216,7 @@ def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken) -> 
         A JSON response containing the ranked illustrations for the specified mode.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/illust/ranking',

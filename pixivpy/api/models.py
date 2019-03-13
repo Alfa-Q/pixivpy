@@ -11,9 +11,11 @@ from requests import Request
 
 from pixivpy.auth import renew_auth_token
 from pixivpy.common.data import AuthToken
-from pixivpy.common.decors import request
+from pixivpy.common.decors import request, retry
+from pixivpy.common.exceptions import InvalidStatusCode
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_bookmark_tags(user_id: str, restrict: str, offset: str,
                       auth_token: AuthToken) -> Dict[str, Any]:
@@ -45,6 +47,7 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
                   auth_token: AuthToken) -> Dict[str, Any]:
@@ -78,6 +81,7 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the comments on a specified illustration.
@@ -106,6 +110,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> D
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
                     min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
@@ -148,6 +153,7 @@ def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_articles(filter: str, category: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve Pixiv articles from a particular category.
@@ -175,6 +181,7 @@ def get_articles(filter: str, category: str, auth_token: AuthToken) -> Dict[str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_related(filter: str, illust_id: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve illustrations related to the one provided.
@@ -202,6 +209,7 @@ def get_related(filter: str, illust_id: str, auth_token: AuthToken) -> Dict[str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the top ranked illustrations for some mode.

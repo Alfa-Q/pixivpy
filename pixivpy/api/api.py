@@ -7,8 +7,6 @@ _call_api: Repeatedly makes API requests to retrieve the next response based on 
 api functions: Use response from _call_api and yield each item within the list that contains each
     data item.
 
-TODO: Add more informative exceptions to API calls
-
 """
 
 import urllib.parse as urlparse

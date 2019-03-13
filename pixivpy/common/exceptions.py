@@ -6,3 +6,7 @@ class InvalidStatusCode(Exception):
 
 class InvalidJsonResponse(Exception):
     """Indicates that the JSON response received by the request call was invalid."""
+
+
+class RetryError(Exception):
+    """Indicates that the retry decorator was unable to continue due to an unexpected exception."""

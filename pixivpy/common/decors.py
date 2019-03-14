@@ -35,7 +35,8 @@ def request(expected_code: int) -> Dict:
             if response.status_code != expected_code:
                 raise InvalidStatusCode(
                     f'Expect Code: {expected_code} | Got: {response.status_code} | '+
-                    f'Function Call: {function.__name__}'
+                    f'Function Call: {function.__name__}\n'+
+                    f'Response Body: {response.content}'
                 )
             return response.json()
         return wrapper

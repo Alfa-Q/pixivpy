@@ -249,10 +249,10 @@ def get_recommended(
         api_model=models.get_recommended,
         kwargs={
             'filter': filter,
-            'include_ranking_illusts': include_ranking_illusts,
-            'include_privacy_policy':  include_privacy_policy,
+            'include_ranked': ('false', 'true')[include_ranking_illusts],
+            'include_privacy': ('false', 'true')[include_privacy_policy],
             'min_bookmark_id_for_recent_illust': None,
-            'max_bookmark_id_for_recommend':     None,
+            'max_bookmark_id_for_recommend': None,
             'offset': offset,
             'auth_token': auth_token
         },

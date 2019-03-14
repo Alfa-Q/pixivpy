@@ -112,7 +112,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> D
 
 @retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
-def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
+def get_recommended(filter: str, include_ranked: str, include_privacy: str,
                     min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
                     offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the recommended illustrations for a user.
@@ -124,10 +124,14 @@ def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
 
     Args:
         filter: A filterable option.
-        include_ranked: Recommended should include illusts that are in the ranked list (i.e. daily)
+        include_ranked: Recommended should include illusts that are in the ranked list.
+            A string that represents a boolean ('true' or 'false').
         include_privacy: Whether or not the privacy policy should be included.
+            A string that represents a boolean ('true' or 'false').
         min_bookmark_id_for_recent_illust: Bookmark ID used for finding recommended bookmarks.
+            Optional parameter, can be set to None.
         max_bookmark_id_for_recommend: Max bookmark ID for finding a recommendation.
+            Optional parameter, can be set to None.
         offset: Offset from the start of a list containing all of the recommended illustrations.
         auth_token: OAuth bearer token.
 

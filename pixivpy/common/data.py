@@ -4,7 +4,7 @@ import time
 from typing import Optional
 
 
-class AuthToken:
+class AuthToken:    # Ignore Reason: Dataclass | pylint: disable=too-few-public-methods
     """Represent an auth bearer token received from OAuth.
 
     Attributes:

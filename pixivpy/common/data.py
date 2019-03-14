@@ -1,6 +1,7 @@
 """Common dataclasses used by the API and auth packages."""
 
 import time
+from typing import Optional
 
 
 class AuthToken:
@@ -15,9 +16,10 @@ class AuthToken:
     """
 
     __slots__ = ['access_token', 'refresh_token', 'ttl', 'expires_at']
-    def __init__(self, access_token: str, refresh_token: str, ttl: int):
+    def __init__(self, access_token: str, refresh_token: str, ttl: int,
+                 expires_at: Optional[int] = None):
         """Init AuthToken with an access token, refresh token and expiration info."""
         self.access_token = access_token
         self.refresh_token = refresh_token
         self.ttl = ttl
-        self.expires_at = int(time.time()) + ttl
+        self.expires_at = (expires_at, int(time.time()) + ttl)[expires_at is None]

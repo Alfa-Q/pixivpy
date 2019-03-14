@@ -2,8 +2,7 @@
 
 import os
 
-from pixivpy.auth import renew_auth_token, get_auth_token
-from pixivpy.common.data import AuthToken
+from pixivpy.auth import get_auth_token
 
 
 # A cached OAuth token which is used for functional tests on all the API calls except for the

@@ -2,15 +2,9 @@
 
 import os
 
-from dotenv import load_dotenv
-
 from pixivpy.auth import renew_auth_token, get_auth_token
 from pixivpy.common.data import AuthToken
 
-
-# For mock testing...
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path)
 
 # A cached OAuth token which is used for functional tests on all the API calls except for the
 # get_auth_token API call which requires a username and password.

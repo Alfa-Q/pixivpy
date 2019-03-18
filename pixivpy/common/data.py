@@ -11,7 +11,7 @@ class AuthToken:    # Ignore Reason: Dataclass | pylint: disable=too-few-public-
         access_token: A string representing a token used to access content.
         refresh_token: A string representing a token used to renew the access token.
         ttl: An integer of the time until the access token expires.
-        expires_at: An integer of the epoch time when the token expires.
+        expires_at: An estimate of the epoch time when the token expires.
 
     """
 

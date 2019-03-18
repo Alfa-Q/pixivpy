@@ -58,8 +58,8 @@ def retry(times: int, on_exceptions: List[Exception]):
         RetryError: An unexpected exception occurred while making the function call.
 
     Example:
-        @retry(times = 2, on_exceptions = [InvalidStatusCode, InvalidJsonResponse])
-        def some_function(...)...
+        >>> @retry(times = 2, on_exceptions = [InvalidStatusCode, InvalidJsonResponse])
+        >>> def some_function(...)...
 
         Makes the function retry-able up to 2 times if and only if the wrapped function raises an
         InvalidStatusCode exception OR a InvalidJsonResponse exception.

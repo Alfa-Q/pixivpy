@@ -9,6 +9,7 @@ class InvalidStatusCode(PixivpyError):
     """Indicates that the status code in the response did not match the expected code."""
 
 
+#TODO: Remove completely.
 class InvalidJsonResponse(PixivpyError):
     """Indicates that the JSON response received by the request call was invalid."""
 

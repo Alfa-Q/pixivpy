@@ -27,7 +27,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pixivpy.common.exceptions import InvalidJsonResponse
+from pixivpy.api.exceptions import ApiError
 from pixivpy.common.data import AuthToken
 from pixivpy import api
 
@@ -121,13 +121,15 @@ def test_api_gen_invalid_json(test_info: Dict[str, Any], invalid_json: Dict[Any,
 
     # Run with the mocked model function with returned invalid JSON
     counter = 0
-    with pytest.raises(InvalidJsonResponse):
+    with pytest.raises(Exception) as ex:
         for _ in test_info['api_fn'](*test_info['valid_args']):
             counter += 1
             if counter == 2:
                 break
+    #TODO: Assert the cause of the ApiError is DataNotFound (inner-exception)
+    assert ex.type == ApiError, "Incorrect exception thrown."
     assert counter <= 1, (
-        'Api generator function ran too many times!  Should have failed immediately.')
+        "Api generator function ran too many times!  Should have failed immediately.")
 
 
 @pytest.mark.parametrize(

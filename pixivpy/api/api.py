@@ -13,6 +13,7 @@ import urllib.parse as urlparse
 from typing import Optional, Iterator, Dict, List, Callable, Any
 
 from pixivpy.api import models
+from pixivpy.api.decors import generate_data
 from pixivpy.api.data import (
     RESTRICT,
     ARTICLE_CATEGORY,
@@ -83,10 +84,11 @@ def _call_api(
             yield json
     except StopIteration:
         return
-    except InvalidStatusCode as ex:
+    except Exception as ex:
         raise ex
 
 
+@generate_data(list_key='bookmark_tags')
 def get_bookmark_tags(
         auth_token: AuthToken,
         user_id: str,
@@ -106,10 +108,10 @@ def get_bookmark_tags(
         The next bookmark tag from a user's list of bookmark tags in JSON format.
 
     Raises:
-        InvalidJsonResponse: TODO: Replace
+        ApiError: An exception occurred while making the API request.
 
     """
-    call_api = _call_api(
+    return _call_api(
         api_model=models.get_bookmark_tags,
         kwargs={
             'user_id': user_id,
@@ -119,16 +121,9 @@ def get_bookmark_tags(
         },
         param_keys=['offset']
     )
-    for response in call_api:
-        if 'bookmark_tags' not in response.keys():
-            raise InvalidJsonResponse(
-                "Cannot locate 'bookmark_tags' key in the JSON response.\n"+
-                f"\tGot Keys: {response.keys()}"
-            )
-        for bookmark_tag in response['bookmark_tags']:
-            yield bookmark_tag
 
 
+@generate_data(list_key='illusts')
 def get_bookmarks(
         auth_token: AuthToken,
         user_id: str,
@@ -148,10 +143,10 @@ def get_bookmarks(
         The next illustration from a user's list of bookmarks in JSON format.
 
     Raises:
-        InvalidJsonResponse: TODO: Replace
+        ApiError: An exception occurred while making the API request.
 
     """
-    call_api = _call_api(
+    return _call_api(
         api_model=models.get_bookmarks,
         kwargs={
             'user_id': user_id,
@@ -162,16 +157,9 @@ def get_bookmarks(
         },
         param_keys=['max_bookmark_id'],
     )
-    for response in call_api:
-        if 'illusts' not in response.keys():
-            raise InvalidJsonResponse(
-                "Cannot locate 'illusts' key in the JSON response.\n"+
-                f"\tGot Keys: {response.keys()}"
-            )
-        for illust in response['illusts']:
-            yield illust
 
 
+@generate_data(list_key='comments')
 def get_illust_comments(
         auth_token: AuthToken,
         illust_id: str,
@@ -188,10 +176,10 @@ def get_illust_comments(
         The next comment on a particular illustration in JSON format.
 
     Raises:
-        InvalidJsonResponse: TODO: Replace
+        ApiError: An exception occurred while making the API request.
 
     """
-    call_api = _call_api(
+    return _call_api(
         api_model=models.get_illust_comments,
         kwargs={
             'illust_id': illust_id,
@@ -200,16 +188,9 @@ def get_illust_comments(
         },
         param_keys=['offset']
     )
-    for response in call_api:
-        if 'comments' not in response.keys():
-            raise InvalidJsonResponse(
-                "Cannot locate 'comments' key in the JSON response.\n"+
-                f"\tGot Keys: {response.keys()}"
-            )
-        for comment in response['comments']:
-            yield comment
 
 
+@generate_data(list_key='illusts')
 def get_recommended(
         auth_token: AuthToken,
         filter: str = FILTER.FOR_ANDROID,
@@ -242,10 +223,10 @@ def get_recommended(
         The next recommended illustration in JSON format.
 
     Raises:
-        InvalidJsonResponse: TODO: Replace
+        ApiError: An exception occurred while making the API request.
 
     """
-    call_api = _call_api(
+    return _call_api(
         api_model=models.get_recommended,
         kwargs={
             'filter': filter,
@@ -258,16 +239,9 @@ def get_recommended(
         },
         param_keys=['min_bookmark_id_for_recent_illust', 'max_bookmark_id_for_recommend', 'offset']
     )
-    for response in call_api:
-        if 'illusts' not in response.keys():
-            raise InvalidJsonResponse(
-                "Cannot locate 'illusts' key in the JSON response.\n"+
-                f"\tGot Keys: {response.keys()}"
-            )
-        for recommended_illust in response['illusts']:
-            yield recommended_illust
 
 
+@generate_data(list_key='spotlight_articles')
 def get_articles(
         auth_token: AuthToken,
         filter: str = FILTER.FOR_ANDROID,
@@ -284,10 +258,10 @@ def get_articles(
         The next article in JSON format.
 
     Raises:
-        InvalidJsonResponse: TODO: Replace
+        ApiError: An exception occurred while making the API request.
 
     """
-    call_api = _call_api(
+    return _call_api(
         api_model=models.get_articles,
         kwargs={
             'filter': filter,
@@ -296,16 +270,9 @@ def get_articles(
         },
         param_keys=['offset']
     )
-    for response in call_api:
-        if 'spotlight_articles' not in response.keys():
-            raise InvalidJsonResponse(
-                "Cannot locate 'spotlight_articles' key in the JSON response.\n"+
-                f"\tGot Keys: {response.keys()}"
-            )
-        for article in response['spotlight_articles']:
-            yield article
 
 
+@generate_data(list_key='illusts')
 def get_related(
         auth_token: AuthToken,
         illust_id: str,
@@ -322,10 +289,10 @@ def get_related(
         The next chunk of JSON illustrations related to the one requested.
 
     Raises:
-        InvalidJsonResponse: TODO: Replace
+        ApiError: An exception occurred while making the API request.
 
     """
-    call_api = _call_api(
+    return _call_api(
         api_model=models.get_related,
         kwargs={
             'filter': filter,
@@ -333,18 +300,12 @@ def get_related(
             'auth_token': auth_token
         },
         #HACK: params in URL contains on key for each seed instead of a single array of seeds.
+        #   This is a unreliable, temporary solution.
         param_keys=[f'seed_illust_ids[{i}]' for i in range(0, 20)]
     )
-    for response in call_api:
-        if 'illusts' not in response.keys():
-            raise InvalidJsonResponse(
-                "Cannot locate 'illusts' key in the JSON response.\n"+
-                f"\tGot Keys: {response.keys()}"
-            )
-        for related_illust in response['illusts']:
-            yield related_illust
 
 
+@generate_data(list_key='illusts')
 def get_rankings(
         auth_token: AuthToken,
         filter: str = FILTER.FOR_ANDROID,
@@ -363,10 +324,10 @@ def get_rankings(
         The next chunk of JSON illustrations for the specified ranking mode.
 
     Raises:
-        InvalidJsonResponse: TODO: Replace
+        ApiError: An exception occurred while making the API request.
 
     """
-    call_api = _call_api(
+    return _call_api(
         api_model=models.get_rankings,
         kwargs={
             'filter': filter,
@@ -376,11 +337,3 @@ def get_rankings(
         },
         param_keys=['mode', 'offset', 'filter']
     )
-    for response in call_api:
-        if 'illusts' not in response.keys():
-            raise InvalidJsonResponse(
-                "Cannot locate 'illusts' key in the JSON response.\n"+
-                f"\tGot Keys: {response.keys()}"
-            )
-        for ranked_illust in response['illusts']:
-            yield ranked_illust

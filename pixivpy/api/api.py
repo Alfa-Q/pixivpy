@@ -3,9 +3,7 @@
 Layer above the models module for repeatedly making an API call to retrieve the next chunk of data
 and extracts the data of interest from the JSON response.
 
-_call_api: Repeatedly makes API requests to retrieve the next response based on the 'next_url' key.
-api functions: Use response from _call_api and yield each item within the list that contains each
-    data item.
+Unlike the models module, the api module also provides safe renewal for expired auth tokens.
 
 """
 
@@ -20,7 +18,6 @@ from pixivpy.api.data import (
     FILTER,
     RANK_MODE
 )
-from pixivpy.common.exceptions import InvalidJsonResponse, InvalidStatusCode
 from pixivpy.common.data import AuthToken
 
 
@@ -212,7 +209,7 @@ def get_recommended(
     Notes: #TODO: Clean up this shit
         These two fields are also in the params of the request.
         Under no circumstance will a sane user ever modify them.  If you wish to modify these
-        parameters, please use the models.
+        parameters, please use the models function.
         min_bookmark_id_for_recent_illust:  Optional parameter which specifies the most recent
             illustration ID. Used by Pixiv backend for finding recommended bookmarks between
             some range of IDs and filtering ones out similar ones between this range.

@@ -8,6 +8,7 @@ import time
 
 from pixivpy.auth import models
 from pixivpy.auth.exceptions import AuthError
+from pixivpy.common.exceptions import PixivpyError
 from pixivpy.common.data import AuthToken
 from pixivpy.common import validate
 
@@ -62,7 +63,7 @@ def get_auth_token(email: str, password: str) -> AuthToken:
             refresh_token=json['response']['refresh_token'],    # pylint: disable=unsubscriptable-object
             ttl=json['response']['expires_in']                  # pylint: disable=unsubscriptable-object
         )
-    except Exception as ex:
+    except PixivpyError as ex:
         raise AuthError(
             "An error occured while trying to make the Auth call 'get_auth_token.'"
         ) from ex
@@ -100,7 +101,7 @@ def renew_auth_token(auth_token: AuthToken) -> AuthToken:
                 ttl=json['response']['expires_in']                  # pylint: disable=unsubscriptable-object
             )
         return auth_token
-    except Exception as ex:
+    except PixivpyError as ex:
         raise AuthError(
             "An error occured while trying to make the Auth call 'renew_auth_token.'"
         ) from ex

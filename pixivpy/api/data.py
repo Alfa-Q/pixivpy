@@ -1,28 +1,28 @@
 """'Static' API argument options used in making API calls."""
 
 
-class RESTRICT:
+class RESTRICT:  # Ignore Reason: Dataclass | pylint: disable=too-few-public-methods
     """Restriction options for API calls."""
 
     PUBLIC = 'public'
     PRIVATE = 'private'
 
 
-class FILTER:
+class FILTER:  # Ignore Reason: Dataclass | pylint: disable=too-few-public-methods
     """Filter options for API calls."""
 
     FOR_ANDROID = 'for_android'
     FOR_IOS = 'for_ios'
 
 
-class ARTICLE_CATEGORY:
+class ARTICLE_CATEGORY:  # Ignore Reason: Dataclass | pylint: disable=too-few-public-methods,invalid-name
     """Category options for article-related API calls."""
 
     ALL = 'all'             # All of the articles across all categories
     SPOTLIGHT = 'spotlight' # Spotlight articles, featured Pixiv articles
 
 
-class RANK_MODE:
+class RANK_MODE:  # Ignore Reason: Dataclass | pylint: disable=too-few-public-methods,invalid-name
     """Mode options for specifying retrieving rankings."""
 
     # Time-only based modes

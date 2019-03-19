@@ -13,7 +13,7 @@ install:
 
 # command to run tests
 script: 
-  - python -m pytest --cov=./
+  - python -m pytest --ignore=./tests/functional --cov=./
 
 # Push the results back to codecov
 after_success:

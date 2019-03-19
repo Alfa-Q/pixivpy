@@ -2,18 +2,39 @@
 
 Layer above the models module for extracting particular data from the JSON response.
 
-An unfortunate side-effect of the request decorator is that Python get confused on which
-type the wrapped function returns. As a result, this causes Pylint to incorrectly think
-that the json returned is not a dictionary object (hence the pylint disable comments).
-Plans to fix this in the future.
-
-#TODO: Add AuthError on InvalidStatusCode exception and parse 'error' key
-#TODO: Parse more specific Exceptions, KeyError
 """
 
+import time
+
 from pixivpy.auth import models
+from pixivpy.auth.exceptions import AuthError
+from pixivpy.common.exceptions import PixivpyError
 from pixivpy.common.data import AuthToken
-from pixivpy.common.exceptions import InvalidJsonResponse
+from pixivpy.common import validate
+
+
+def _validate_auth_response(res_json):
+    """Validate raw JSON response of auth function.
+
+    Args:
+        res_json: The raw response JSON.
+
+    Raises:
+        DataNotFound: Validation failed due to missing data or unexpected data.
+
+    """
+
+    # Ensure sub-dictionary exists
+    validate.response_contains_key(res_json, 'response')
+    validate.response_key_mapping(res_json, 'response', dict)
+    # Ensure the sub-dictionary contains the required keys
+    validate.response_contains_key(res_json['response'], 'access_token')
+    validate.response_contains_key(res_json['response'], 'refresh_token')
+    validate.response_contains_key(res_json['response'], 'expires_in')
+    # Ensure the type of those keys is correct
+    validate.response_key_mapping(res_json['response'], 'access_token', str)
+    validate.response_key_mapping(res_json['response'], 'refresh_token', str)
+    validate.response_key_mapping(res_json['response'], 'expires_in', int)
 
 
 def get_auth_token(email: str, password: str) -> AuthToken:
@@ -36,37 +57,51 @@ def get_auth_token(email: str, password: str) -> AuthToken:
     """
     try:
         json = models.get_auth_token(email, password)
+        _validate_auth_response(json)
         return AuthToken(
             access_token=json['response']['access_token'],      # pylint: disable=unsubscriptable-object
             refresh_token=json['response']['refresh_token'],    # pylint: disable=unsubscriptable-object
             ttl=json['response']['expires_in']                  # pylint: disable=unsubscriptable-object
         )
-    except Exception as ex:
-        raise InvalidJsonResponse(ex)
+    except PixivpyError as ex:
+        raise AuthError(
+            "An error occured while trying to make the Auth call 'get_auth_token.'"
+        ) from ex
 
 
 def renew_auth_token(auth_token: AuthToken) -> AuthToken:
-    """Renews an auth bearer token.
+    """Renews an auth bearer token if it has expired.
 
     After an auth bearer token expires, the refresh token is used to update the access token within
-    the AuthToken object, with the updated time-to-live value.
+    the AuthToken object. A request to update the token is only made if the 'expires_at' value
+    is less than the current time. This function is never meant to be called directly, the API
+    functions will make a call to this function before each request.
+
+    This function does not account for the potential case where the 'expires_at' value is greater
+    than the current time but doesn't have enough time to make a request, before the token expires.
 
     Args:
-        auth_token: The auth bearer token to be renewed.
+        auth_token: The auth bearer token to be updated.
 
     Returns:
-        A renewed auth bearer token.
+        A valid auth bearer token.
 
     Raises:
         InvalidJsonResponse: A key within the JSON response could not be found.
 
     """
     try:
-        json = models.renew_auth_token(auth_token)
-        return AuthToken(
-            access_token=json['response']['access_token'],      # pylint: disable=unsubscriptable-object
-            refresh_token=json['response']['refresh_token'],    # pylint: disable=unsubscriptable-object
-            ttl=json['response']['expires_in']                  # pylint: disable=unsubscriptable-object
-        )
-    except Exception as ex:
-        raise InvalidJsonResponse(ex)
+        # Check if the token has expired.
+        if time.time() >= auth_token.expires_at:
+            json = models.renew_auth_token(auth_token)
+            _validate_auth_response(json)
+            return AuthToken(
+                access_token=json['response']['access_token'],      # pylint: disable=unsubscriptable-object
+                refresh_token=json['response']['refresh_token'],    # pylint: disable=unsubscriptable-object
+                ttl=json['response']['expires_in']                  # pylint: disable=unsubscriptable-object
+            )
+        return auth_token
+    except PixivpyError as ex:
+        raise AuthError(
+            "An error occured while trying to make the Auth call 'renew_auth_token.'"
+        ) from ex

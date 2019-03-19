@@ -9,10 +9,13 @@ from typing import Dict, Any
 
 from requests import Request
 
+from pixivpy.auth import renew_auth_token
 from pixivpy.common.data import AuthToken
-from pixivpy.common.decors import request
+from pixivpy.common.decors import request, retry
+from pixivpy.common.exceptions import InvalidStatusCode
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_bookmark_tags(user_id: str, restrict: str, offset: str,
                       auth_token: AuthToken) -> Dict[str, Any]:
@@ -29,6 +32,7 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str,
         A JSON response containing the user's bookmark tags.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/user/bookmark-tags/illust',
@@ -43,6 +47,7 @@ def get_bookmark_tags(user_id: str, restrict: str, offset: str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
                   auth_token: AuthToken) -> Dict[str, Any]:
@@ -60,6 +65,7 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
         A JSON response containing illustrations from a particular users bookmarks.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/user/bookmarks/illust',
@@ -75,6 +81,7 @@ def get_bookmarks(user_id: str, restrict: str, max_bookmark_id: str, tag: str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the comments on a specified illustration.
@@ -89,6 +96,7 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> D
         A JSON response containing comments from a particular illustration.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v2/illust/comments',
@@ -102,8 +110,9 @@ def get_illust_comments(illust_id: str, offset: str, auth_token: AuthToken) -> D
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
-def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
+def get_recommended(filter: str, include_ranked: str, include_privacy: str,
                     min_bookmark_id_for_recent_illust: str, max_bookmark_id_for_recommend: str,
                     offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the recommended illustrations for a user.
@@ -115,10 +124,14 @@ def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
 
     Args:
         filter: A filterable option.
-        include_ranked: Recommended should include illusts that are in the ranked list (i.e. daily)
+        include_ranked: Recommended should include illusts that are in the ranked list.
+            A string that represents a boolean ('true' or 'false').
         include_privacy: Whether or not the privacy policy should be included.
+            A string that represents a boolean ('true' or 'false').
         min_bookmark_id_for_recent_illust: Bookmark ID used for finding recommended bookmarks.
+            Optional parameter, can be set to None.
         max_bookmark_id_for_recommend: Max bookmark ID for finding a recommendation.
+            Optional parameter, can be set to None.
         offset: Offset from the start of a list containing all of the recommended illustrations.
         auth_token: OAuth bearer token.
 
@@ -126,6 +139,7 @@ def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
         A JSON response containing recommended illustrations.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/illust/recommended',
@@ -143,6 +157,7 @@ def get_recommended(filter: str, include_ranked: bool, include_privacy: bool,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_articles(filter: str, category: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve Pixiv articles from a particular category.
@@ -156,6 +171,7 @@ def get_articles(filter: str, category: str, auth_token: AuthToken) -> Dict[str,
         A JSON response containing articles for the particular category.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/spotlight/articles',
@@ -169,6 +185,7 @@ def get_articles(filter: str, category: str, auth_token: AuthToken) -> Dict[str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_related(filter: str, illust_id: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve illustrations related to the one provided.
@@ -182,6 +199,7 @@ def get_related(filter: str, illust_id: str, auth_token: AuthToken) -> Dict[str,
         A JSON response containing related illustrations.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v2/illust/related',
@@ -195,6 +213,7 @@ def get_related(filter: str, illust_id: str, auth_token: AuthToken) -> Dict[str,
     )
 
 
+@retry(times=2, on_exceptions=[InvalidStatusCode])
 @request(expected_code=200)
 def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken) -> Dict[str, Any]:
     """Retrieve the top ranked illustrations for some mode.
@@ -209,6 +228,7 @@ def get_rankings(filter: str, mode: str, offset: str, auth_token: AuthToken) -> 
         A JSON response containing the ranked illustrations for the specified mode.
 
     """
+    auth_token = renew_auth_token(auth_token)
     return Request(
         method='GET',
         url='https://app-api.pixiv.net/v1/illust/ranking',

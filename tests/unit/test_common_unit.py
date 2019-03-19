@@ -47,7 +47,7 @@ def test_validate_response_contains_key(fn_kwargs: Dict[str, Any], error: Option
     "fn_kwargs, error",
     [
         (   # Type does not match expected
-            {'res_json': {'the_key': int}, 'key': 'the_key', '_type': list},
+            {'res_json': {'the_key': 10}, 'key': 'the_key', '_type': list},
             DataNotFound
         ),
         (   # Type matches expected

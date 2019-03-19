@@ -26,7 +26,8 @@ def response_contains_key(res_json: Dict[str, Any], key: str):
 def response_key_mapping(res_json: Dict[str, Any], key: str, _type: type):
     """Ensure the key in a JSON response is mapped to a particular type.
 
-    Assumes that the key already exists in the JSON response.
+    Assumes that the key already exists in the JSON response.  The 'key' is used for producing a
+    more descriptive exception message (it's not useless).
 
     Args:
         res_json: JSON response retrieved by the model function.

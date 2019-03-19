@@ -1,17 +1,11 @@
 """pixivpy common exception classes."""
 
-
 class PixivpyError(Exception):
     """Generic exception when an error occurs."""
 
 
 class InvalidStatusCode(PixivpyError):
     """Indicates that the status code in the response did not match the expected code."""
-
-
-#TODO: Remove completely.
-class InvalidJsonResponse(PixivpyError):
-    """Indicates that the JSON response received by the request call was invalid."""
 
 
 class RetryError(PixivpyError):

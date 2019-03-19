@@ -28,7 +28,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pixivpy.common.exceptions import InvalidJsonResponse
+from pixivpy.auth.exceptions import AuthError
 from pixivpy.common.data import AuthToken
 from pixivpy import auth
 
@@ -79,7 +79,7 @@ def test_auth_invalid_json(auth_fn: Callable, args: Any, invalid_json: Dict[Any,
     auth_func_mock.return_value = invalid_json
 
     # Run with the mocked model function with returned invalid json
-    with pytest.raises(InvalidJsonResponse):
+    with pytest.raises(AuthError):
         auth_fn(*args)
 
 

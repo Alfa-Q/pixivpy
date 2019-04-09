@@ -9,10 +9,10 @@ from typing import Dict, Any
 
 from requests import Request
 
-from pixivpy.auth import renew_auth_token
-from pixivpy.common.data import AuthToken
-from pixivpy.common.decors import request, retry
-from pixivpy.common.exceptions import InvalidStatusCode
+from pixiv.auth import renew_auth_token
+from pixiv.common.data import AuthToken
+from pixiv.common.decors import request, retry
+from pixiv.common.exceptions import InvalidStatusCode
 
 
 @retry(times=2, on_exceptions=[InvalidStatusCode])

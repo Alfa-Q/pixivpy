@@ -10,14 +10,14 @@ from typing import Dict, Any
 import pytest
 
 import config
-from pixivpy.api import (
+from pixiv.api import (
     RESTRICT,
     FILTER,
     ARTICLE_CATEGORY,
     RANK_MODE
 )
-import pixivpy.auth.models as authmodels
-import pixivpy.api.models as apimodels
+import pixiv.auth.models as authmodels
+import pixiv.api.models as apimodels
 
 
 # -------------------------------------- Test Mapping ---------------------------------------

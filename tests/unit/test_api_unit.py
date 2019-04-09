@@ -1,4 +1,4 @@
-"""Test cases for pixivpy API functions.
+"""Test cases for pixiv API functions.
 
 Each new Auth function is registered in the _API_TEST_INFO dictionary as a sub-dictionary with
 the function name mapped to a dictionary containing the following fields:
@@ -27,9 +27,9 @@ from unittest.mock import patch
 
 import pytest
 
-from pixivpy.api.exceptions import ApiError
-from pixivpy.common.data import AuthToken
-from pixivpy import api
+from pixiv.api.exceptions import ApiError
+from pixiv.common.data import AuthToken
+from pixiv import api
 
 
 # -------------------------------------- Test Mapping ---------------------------------------
@@ -116,7 +116,7 @@ def test_api_gen_invalid_json(test_info: Dict[str, Any], invalid_json: Dict[Any,
 
     """
     # Setup the associated mocked model function with an invalid JSON return value
-    api_model = patch(f"pixivpy.api.models.{test_info['name']}").start()
+    api_model = patch(f"pixiv.api.models.{test_info['name']}").start()
     api_model.return_value = invalid_json
 
     # Run with the mocked model function with returned invalid JSON
@@ -152,7 +152,7 @@ def test_api_gen_valid_json(test_info: Dict[str, Any], valid_json: Dict[str, Any
 
     """
     # Setup the associated mocked model function with a valid JSON return value
-    api_model_mock = patch(f"pixivpy.api.models.{test_info['name']}").start()
+    api_model_mock = patch(f"pixiv.api.models.{test_info['name']}").start()
     api_model_mock.return_value = copy.deepcopy(valid_json)
 
     # Total expected items in the valid json

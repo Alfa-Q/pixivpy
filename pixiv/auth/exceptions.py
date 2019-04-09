@@ -1,7 +1,7 @@
 """Auth related exceptions."""
 
-from pixivpy.common.exceptions import PixivpyError
+from pixiv.common.exceptions import PixivError
 
 
-class AuthError(PixivpyError):
+class AuthError(PixivError):
     """Generic exception which is thrown when an error occurs during an Auth call."""

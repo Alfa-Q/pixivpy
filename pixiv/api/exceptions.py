@@ -1,7 +1,7 @@
 """API related exceptions."""
 
-from pixivpy.common.exceptions import PixivpyError
+from pixiv.common.exceptions import PixivError
 
 
-class ApiError(PixivpyError):
+class ApiError(PixivError):
     """Generic exception which is thrown when an expected error occurs during an API call."""

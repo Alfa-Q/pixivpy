@@ -3,9 +3,9 @@
 from functools import wraps
 from typing import Iterator, Dict, Any, Callable
 
-from pixivpy.api.exceptions import ApiError
-from pixivpy.common.exceptions import PixivpyError
-from pixivpy.common import validate
+from pixiv.api.exceptions import ApiError
+from pixiv.common.exceptions import PixivError
+from pixiv.common import validate
 
 
 def generate_data(list_key: str) -> Iterator[Dict[str, Any]]:
@@ -37,7 +37,7 @@ def generate_data(list_key: str) -> Iterator[Dict[str, Any]]:
                     validate.response_key_mapping(response, list_key, list)
                     for json_data in response[list_key]:
                         yield json_data
-            except PixivpyError as ex:
+            except PixivError as ex:
                 raise ApiError(
                     f"An error occured while trying to make the API call '{function.__name__}.'"
                 ) from ex

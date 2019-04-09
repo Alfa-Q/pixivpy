@@ -14,7 +14,7 @@ import os
 
 from dotenv import load_dotenv
 
-from pixivpy.auth import get_auth_token
+from pixiv.auth import get_auth_token
 
 
 # Use the local .env file

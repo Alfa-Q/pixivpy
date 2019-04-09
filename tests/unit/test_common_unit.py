@@ -1,11 +1,11 @@
-"""Test cases for Pixivpy common modules."""
+"""Test cases for Pixiv common modules."""
 
 from typing import Dict, Any, Optional
 
 import pytest
 
-from pixivpy.common import validate
-from pixivpy.common.exceptions import DataNotFound, PixivpyError
+from pixiv.common import validate
+from pixiv.common.exceptions import DataNotFound, PixivError
 
 
 @pytest.mark.parametrize(
@@ -25,7 +25,7 @@ from pixivpy.common.exceptions import DataNotFound, PixivpyError
         )
     ]
 )
-def test_validate_response_contains_key(fn_kwargs: Dict[str, Any], error: Optional[PixivpyError]):
+def test_validate_response_contains_key(fn_kwargs: Dict[str, Any], error: Optional[PixivError]):
     """Test validation functions for responses.
 
     Sanity test to ensure that basic validation is functioning properly, raising the appropriate
@@ -56,7 +56,7 @@ def test_validate_response_contains_key(fn_kwargs: Dict[str, Any], error: Option
         )
     ]
 )
-def test_validate_response_typing(fn_kwargs: Dict[str, Any], error: Optional[PixivpyError]):
+def test_validate_response_typing(fn_kwargs: Dict[str, Any], error: Optional[PixivError]):
     """Test validation functions for responses.
 
     Sanity test to ensure that basic validation is functioning properly, raising the appropriate

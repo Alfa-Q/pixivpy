@@ -1,11 +1,11 @@
-"""Pixivpy common decorator functions."""
+"""Python-Pixiv common decorator functions."""
 
 from functools import wraps
 from typing import Dict, Callable, List
 
 import requests
 
-from pixivpy.common.exceptions import InvalidStatusCode, RetryError
+from pixiv.common.exceptions import InvalidStatusCode, RetryError
 
 
 def request(expected_code: int) -> Dict:

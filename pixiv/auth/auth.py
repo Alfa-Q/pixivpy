@@ -6,11 +6,11 @@ Layer above the models module for extracting particular data from the JSON respo
 
 import time
 
-from pixivpy.auth import models
-from pixivpy.auth.exceptions import AuthError
-from pixivpy.common.exceptions import PixivpyError
-from pixivpy.common.data import AuthToken
-from pixivpy.common import validate
+from pixiv.auth import models
+from pixiv.auth.exceptions import AuthError
+from pixiv.common.exceptions import PixivError
+from pixiv.common.data import AuthToken
+from pixiv.common import validate
 
 
 def _validate_auth_response(res_json):
@@ -63,7 +63,7 @@ def get_auth_token(email: str, password: str) -> AuthToken:
             refresh_token=json['response']['refresh_token'],    # pylint: disable=unsubscriptable-object
             ttl=json['response']['expires_in']                  # pylint: disable=unsubscriptable-object
         )
-    except PixivpyError as ex:
+    except PixivError as ex:
         raise AuthError(
             "An error occured while trying to make the Auth call 'get_auth_token.'"
         ) from ex
@@ -101,7 +101,7 @@ def renew_auth_token(auth_token: AuthToken) -> AuthToken:
                 ttl=json['response']['expires_in']                  # pylint: disable=unsubscriptable-object
             )
         return auth_token
-    except PixivpyError as ex:
+    except PixivError as ex:
         raise AuthError(
             "An error occured while trying to make the Auth call 'renew_auth_token.'"
         ) from ex

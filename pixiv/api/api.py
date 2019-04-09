@@ -3,22 +3,20 @@
 Layer above the models module for repeatedly making an API call to retrieve the next chunk of data
 and extracts the data of interest from the JSON response.
 
-Unlike the models module, the api module also provides safe renewal for expired auth tokens.
-
 """
 
 import urllib.parse as urlparse
 from typing import Optional, Iterator, Dict, List, Callable, Any
 
-from pixivpy.api import models
-from pixivpy.api.decors import generate_data
-from pixivpy.api.data import (
+from pixiv.api import models
+from pixiv.api.decors import generate_data
+from pixiv.api.data import (
     RESTRICT,
     ARTICLE_CATEGORY,
     FILTER,
     RANK_MODE
 )
-from pixivpy.common.data import AuthToken
+from pixiv.common.data import AuthToken
 
 
 def _call_api(
@@ -333,4 +331,19 @@ def get_rankings(
             'auth_token': auth_token
         },
         param_keys=['mode', 'offset', 'filter']
+    )
+
+
+@generate_data(list_key='lives')
+def get_livestreams(
+        auth_token: AuthToken,
+        filter: str = FILTER.FOR_ANDROID,
+        mode: str = RANK_MODE.DAY,
+        offset: Optional[str] = None
+    ) -> Iterator[Dict[str, Any]]:
+    return _call_api(
+        api_model=models.get_livestreams,
+        kwargs={
+            'filter': filter,
+        }
     )

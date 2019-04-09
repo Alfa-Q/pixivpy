@@ -1,4 +1,4 @@
-"""Test cases for pixivpy authentication functions.
+"""Test cases for pixiv authentication functions.
 
 Testcases check that the auth functions are able to extract data properly and raise the correct
 exceptions in cases where the JSON is invalid. The testcases run under the assumption that the
@@ -28,9 +28,9 @@ from unittest.mock import patch
 
 import pytest
 
-from pixivpy.auth.exceptions import AuthError
-from pixivpy.common.data import AuthToken
-from pixivpy import auth
+from pixiv.auth.exceptions import AuthError
+from pixiv.common.data import AuthToken
+from pixiv import auth
 
 
 # -------------------------------------- Test Mapping ---------------------------------------
@@ -74,7 +74,7 @@ def test_auth_invalid_json(auth_fn: Callable, args: Any, invalid_json: Dict[Any,
 
     """
     # Setup the mocked auth function with the returned json
-    auth_func_patch = patch(f'pixivpy.auth.models.{auth_fn.__name__}')
+    auth_func_patch = patch(f'pixiv.auth.models.{auth_fn.__name__}')
     auth_func_mock = auth_func_patch.start()
     auth_func_mock.return_value = invalid_json
 
@@ -105,7 +105,7 @@ def test_auth_valid_json(auth_fn: Callable, args: Any, valid_json: Dict[str, Any
 
     """
     # Setup the mocked auth function with the returned json
-    auth_func_patch = patch(f'pixivpy.auth.models.{auth_fn.__name__}')
+    auth_func_patch = patch(f'pixiv.auth.models.{auth_fn.__name__}')
     auth_func_mock = auth_func_patch.start()
     auth_func_mock.return_value = valid_json
 

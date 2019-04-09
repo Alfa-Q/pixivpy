@@ -1,4 +1,4 @@
-"""Test cases for pixivpy authentication and api models.
+"""Test cases for pixiv authentication and api models.
 
 The testscases check that the @request decorator throws an InvalidStatusCode for cases where the
 response contains a code which does not match the expected response code. It only tests the
@@ -25,10 +25,10 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-from pixivpy.api  import models as apimodels
-from pixivpy.auth import models as authmodels
-from pixivpy.common.exceptions import InvalidStatusCode
-from pixivpy.common.data import AuthToken
+from pixiv.api  import models as apimodels
+from pixiv.auth import models as authmodels
+from pixiv.common.exceptions import InvalidStatusCode
+from pixiv.common.data import AuthToken
 
 
 # -------------------------------------- Test Mapping ---------------------------------------

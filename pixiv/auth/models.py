@@ -11,8 +11,8 @@ from typing import Dict, Any
 
 from requests import Request
 
-from pixivpy.common.decors import request
-from pixivpy.common.data import AuthToken
+from pixiv.common.decors import request
+from pixiv.common.data import AuthToken
 
 
 @request(expected_code=200)

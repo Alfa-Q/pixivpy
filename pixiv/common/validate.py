@@ -2,7 +2,7 @@
 
 from typing import Dict, Any
 
-from pixivpy.common.exceptions import DataNotFound
+from pixiv.common.exceptions import DataNotFound
 
 
 def response_contains_key(res_json: Dict[str, Any], key: str):

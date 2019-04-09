@@ -1,4 +1,4 @@
-"""pixivpy API package initialization."""
+"""python-pixiv API package initialization."""
 
 from .api import (
     get_bookmarks,
